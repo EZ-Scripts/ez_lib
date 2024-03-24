@@ -1,12 +1,10 @@
--- Last Modified: 24/03/2024
----@version 1.0.0
 ---@module Target
 ---@description Target system bridge for FiveM
 
+Ns_lib = Ns_lib or {}
 
 --- Function to check if resource exists
 CreateThread(function()
-    Wait(500)
     if (Config.Target ~= "none" or Config.Target ~= nil) and GetResourceState(Config.Target) ~= "started" then
         DebugPrint("Target resource not found")
         return
