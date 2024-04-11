@@ -3,6 +3,7 @@
 
 Framework = Framework or nil
 Ns_lib = Ns_lib or {}
+Ns_lib.Functions = Ns_lib.Functions or {}
 
 --- @section Initialization
 
@@ -25,12 +26,20 @@ end)
 ---@param item string The item to check
 ---@param amount integer The amount of the item to check
 ---@param cb function Callback function
-local function has_item(item, amount, cb)
+local function has_item(item, amount)
     local item = tostring(item)
     local amount = tonumber(amount) or 1
-    Ns_lib.Functions.TriggerCallback('ns_lib:server:has_item', function(has_item)
-        cb(has_item)
-    end , item, amount)
+    DebugPrint('Checking if player has item: ' .. item .. ' Amount: ' .. amount)
+    local id = Ns_lib.Functions.TriggerCallback('ns_lib:server:has_item', {item = item, amount = amount})
+
+    while Ns_lib.Callbacks[id] ~= nil do
+        Wait(0)
+        local res = Ns_lib.Callbacks[id]
+        if type(res) == "boolean" then
+            Ns_lib.Callbacks[id] = nil
+            return res
+        end
+    end
 end
 
 
@@ -58,7 +67,7 @@ local function get_player_job()
 end
 
 --- @Section Assign Functions
-Ns_lib.Callbacks.HasItem = has_item
+Ns_lib.Functions.HasItem = has_item
 Ns_lib.Functions.GetPlayerData = get_player_data
 Ns_lib.Functions.GetPlayerJob = get_player_job
 

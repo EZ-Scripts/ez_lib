@@ -3,6 +3,9 @@
 
 Framework = Framework or nil
 Ns_lib = Ns_lib or {}
+Ns_lib.Functions = Ns_lib.Functions or {}
+Ns_lib.Functions.Inventory = Ns_lib.Functions.Inventory or {}
+Ns_lib.Functions.Bank = Ns_lib.Functions.Bank or {}
 
 --- @section Initialization
 
@@ -13,9 +16,13 @@ CreateThread(function()
         Wait(500)
     end
     if Config.Framework == 'qb-core' then
+        DebugPrint('Framework: qb-core')
         Framework = exports['qb-core']:GetCoreObject()
     elseif Config.Framework == 'es_extended' then
+        DebugPrint('Framework: es_extended')
         Framework = exports['es_extended']:getSharedObject()
+    else
+        DebugPrint('Framework not found')
     end
 end)
 
@@ -44,8 +51,10 @@ end
 --- @usage local has_item = Ns_lib.Functions.has_item(source, 'item_name', item_amount)
 local function has_item(source, item_name, item_amount)
     local player = get_player(source)
+
     if not player then return false end
     item_amount = item_amount or 1
+    DebugPrint('Checking if player has item: ' .. item_name .. ' Amount: ' .. item_amount)
 
     if Config.Framework == 'qb-core' then
         local item = player.Functions.GetItemByName(item_name)
@@ -260,14 +269,16 @@ Ns_lib.Functions.SetPlayerJob = set_player_job
 --- @section Callbacks
 
 --- Callback to check if a player has an item in their inventory.
-Ns_lib.Functions.CreateCallback('ns_lib:server:has_item', function(source, cb, ...)
-    local data = ...
-    local item_name = data.item_name
-    local item_amount = data.item_amount or 1
+Ns_lib.Functions.CreateCallback('ns_lib:server:has_item', function(source, cb, data)
+    local item_name = data.item
+    local item_amount = data.amount or 1
     local player_has_item = false
-    if has_item(source, item_name, item_amount) then
+    DebugPrint('Checking if player has item: ' .. item_name)
+    if Ns_lib.Functions.HasItem(source, item_name, item_amount) then
+        DebugPrint('Player has item: ' .. item_name)
         player_has_item = true
     else
+        DebugPrint('Player does not have item: ' .. item_name)
         player_has_item = false
     end
     cb(player_has_item)

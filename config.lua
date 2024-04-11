@@ -1,6 +1,7 @@
 Config = {}
 
-Config.Framework = "qb" -- "qb" or "esx"
+Config.Debug = true -- Set to false to disable debug messages
+Config.Framework = "qb-core" -- "qb-core" or "es_extended"
 Config.Target = "none" -- "none" or "ox_target" or "qb-target", etc
 Config.Notify = "qb"
 
@@ -30,8 +31,8 @@ end
 --- Function to show UI to open stash in its zone
 ---@param: stashName: The stash name you have assigned to it, you may use if needed.
 ---@param: sharedStash: True=Shared, False=Personal. You may use if you want.
-Config.ShowUI = function(stashName, sharedStash)
-    exports['qb-core']:DrawText("<b>[E] Open Stash</b>", 'left')
+Config.ShowUI = function(label)
+    exports['qb-core']:DrawText("<b>[E] "..label.."</b>", 'left')
 end
 
 --- Function to hide UI to open stash in its zone
