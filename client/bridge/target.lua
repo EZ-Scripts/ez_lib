@@ -2,6 +2,7 @@
 ---@description Target system bridge for FiveM
 
 Ns_lib = Ns_lib or {}
+Ns_lib.Functions = Ns_lib.Functions or {}
 
 --- Function to check if resource exists
 CreateThread(function()
@@ -12,9 +13,10 @@ CreateThread(function()
 end)
 
 Targets = {}
+InLocation = false
 
 --- Function to check if player can open stash
----@param: data: The data of the target. minZ, maxZ, coords(vector4), length(optional), width(optional), icon, action, event, distance (optional)
+---@param: data: The data of the target. minZ, maxZ, coords(vector4), length(optional), width(optional), icon, action(entity), event, distance (optional), canInteract(entity) [Optional], type [Optional], label
 ---@return: Target
 function CreateTarget(data)
     local k = "ns_lib_Target#"..#Targets+1
@@ -26,7 +28,22 @@ function CreateTarget(data)
         local Zone = BoxZone:Create(vector3, length, width, {name = "box_zone", debugPoly = Config.Debug, heading = heading, minZ = data.minZ or data.coords.z - 1, maxZ = data.maxZ or data.coords.z + 1})
         Targets[k] = ComboZone:Create({Zone}, {name = k, debugPoly = Config.Debug})
         Targets[k]:onPlayerInOut(function(isPointInside, _, _)
-            data.action(isPointInside)
+            if isPointInside then
+                InLocation = true
+                if data.canInteract(nil) or data.canInteract == nil then
+                    Config.ShowUI(data.label)
+                    while InLocation do
+                        Wait(0)
+                        if IsControlJustReleased(0, 38) then
+                            data.action(nil)
+                            break
+                        end
+                    end
+                end
+            else
+                InLocation = false
+                Config.HideUI()
+            end
         end)
     elseif Config.Target == "ox_target" then
         Targets[k] =
@@ -39,10 +56,14 @@ function CreateTarget(data)
             options = {
                 {
                     icon = data.icon,
-                    label = Loc[Config.Locale].target["smoke_bong"],
+                    canInteract = function(entity)
+                        if data.canInteract == nil then return true end
+                        return data.canInteract(entity)
+                    end,
+                    label = data.label,
                     distance = data.distance or 2.5,
-                    onSelect = function()
-                        data.action(true)
+                    onSelect = function(entity)
+                        data.action(entity)
                     end
                 },
             },
@@ -61,9 +82,15 @@ function CreateTarget(data)
             {
                 options = {
                     {
-                        type = "client",
+                        type = data.type or "client",
+                        canInteract = function(entity)
+                            if data.canInteract == nil then return true end
+                            return data.canInteract(entity) or true
+                        end,
                         event = data.event,
-                        action = data.action(true),
+                        action = function(entity)
+                            data.action(entity)
+                        end,
                         icon = data.icon,
                         label = data.label,
                     },
@@ -74,8 +101,6 @@ function CreateTarget(data)
     end
     return Targets[k]
 end
-
-exports("CreateTarget", CreateTarget)
 
 --- Function to remove target
 ---@param: target: The target you want to remove
@@ -88,8 +113,6 @@ function RemoveTarget(target)
         exports[Config.Target]:RemoveZone(target)
     end
 end
-
-exports("RemoveTarget", RemoveTarget)
 
 --- On resource stop
 AddEventHandler("onResourceStop", function(resource)
@@ -107,3 +130,7 @@ AddEventHandler("onResourceStop", function(resource)
         end
     end
 end)
+
+--- @Section Assign Functions
+Ns_lib.Functions.CreateTarget = CreateTarget
+Ns_lib.Functions.RemoveTarget = RemoveTarget
