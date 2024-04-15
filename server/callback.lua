@@ -19,6 +19,7 @@ RegisterNetEvent("ns_lib:server:trigger_callback", function(name, cb_id, data)
     else
         DebugPrint("Callback not found: " .. name)
     end
+    return
 end)
 
 Ns_lib.Functions.CreateCallback = CreateCallback

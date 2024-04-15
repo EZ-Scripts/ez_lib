@@ -5,7 +5,7 @@ Framework = Framework or nil
 Ns_lib = Ns_lib or {}
 Ns_lib.Functions = Ns_lib.Functions or {}
 Ns_lib.Functions.Inventory = Ns_lib.Functions.Inventory or {}
-Ns_lib.Functions.Bank = Ns_lib.Functions.Bank or {}
+Ns_lib.Functions.Money = Ns_lib.Functions.Money or {}
 
 --- @section Initialization
 
@@ -48,7 +48,7 @@ end
 --- @param item_name string Name of the item to check.
 --- @param item_amount integer (Optional) Amount of the item to check for.
 --- @return boolean
---- @usage local has_item = Ns_lib.Functions.has_item(source, 'item_name', item_amount)
+--- @usage local has_item = Ns_lib.Functions.HasItem(source, 'item_name', item_amount)
 local function has_item(source, item_name, item_amount)
     local player = get_player(source)
 
@@ -62,9 +62,8 @@ local function has_item(source, item_name, item_amount)
     elseif Config.Framework == 'es_extended' then
         local item = player.getInventoryItem(item_name)
         return item ~= nil and item.count >= item_amount
-    elseif Config.Framework == 'ox_core' then
-        local count = exports.ox_inventory:Search(source, 'count', item_name)
-        return count ~= nil and count >= item_amount
+        --[[local count = exports.ox_inventory:Search(source, 'count', item_name)
+        return count ~= nil and count >= item_amount]]
     end
 
     return false
@@ -78,29 +77,30 @@ end
 --- @param item_data table (Optional) Item data to add to the inventory.
 --- @usage Ns_lib.Functions.Inventory.Add(source, 'item_name', item_amount, item_data)
 --- @usage Ns_lib.Functions.Inventory.Remove(source, 'item_name', item_amount)
+--- @return boolean
 local function adjust_inventory(source, action, item, count, item_data)
     local player = get_player(source)
     if not player then return false end
 
     if Config.Framework == 'qb-core' then
         if action == 'add' then
-            player.Functions.AddItem(item, count, nil, item_data)
+            return player.Functions.AddItem(item, count, nil, item_data)
         elseif action == 'remove' then
-            player.Functions.RemoveItem(item, count)
+            return player.Functions.RemoveItem(item, count)
         end
     elseif Config.Framework == 'es_extended' then
         if action == 'add' then
-            player.addInventoryItem(item, count)
+            return player.addInventoryItem(item, count)
         elseif action == 'remove' then
-            player.removeInventoryItem(item, count)
+            return player.removeInventoryItem(item, count)
         end
     end
 end
 local function addItem(source, item, count, item_data)
-    adjust_inventory(source, 'add', item, count, item_data)
+    return adjust_inventory(source, 'add', item, count, item_data)
 end
 local function removeItem(source, item, count)
-    adjust_inventory(source, 'remove', item, count)
+    return adjust_inventory(source, 'remove', item, count)
 end
 
 --- Adjust the player's bank balance based on action.
@@ -108,8 +108,8 @@ end
 --- @param action string Action to perform on the bank balance ('add' or 'remove').
 --- @param type string Type of account(cash or bank).
 --- @param amount integer Amount to adjust the bank balance by.
---- @usage Ns_lib.Functions.Bank.Add(source, 'cash', 100)
---- @usage Ns_lib.Functions.Bank.Remove(source, 'bank', 100)
+--- @usage Ns_lib.Functions.Money.Add(source, 'cash', 100)
+--- @usage Ns_lib.Functions.Money.Remove(source, 'bank', 100)
 local function adjust_balance(source, action, type, amount)
     local player = get_player(source)
     if not player then return false end
@@ -226,44 +226,65 @@ end
 --- @return table
 --- @usage local player_identity = Ns_lib.Functions.GetIdentity(source)
 local function get_identity(source)
-    local player = get_player(source)
-    if not player then return false end
-
-    local player_data
-
+    local player_data = nil
     if Config.Framework == 'qb-core' then
+        local player = get_player(source)
         player_data = {
-            first_name = player.PlayerData.charinfo.firstname,
-            last_name = player.PlayerData.charinfo.lastname,
+            firstname = player.PlayerData.charinfo.firstname,
+            lastname = player.PlayerData.charinfo.lastname,
             dob = player.PlayerData.charinfo.birthdate,
             sex = player.PlayerData.charinfo.gender,
             nationality = player.PlayerData.charinfo.nationality
         }
     elseif Config.Framework == 'es_extended' then
-        player_data = {
-            first_name = player.variables.firstName,
-            last_name = player.variables.lastName,
-            dob = player.variables.dateofbirth,
-            sex = player.variables.sex,
-            nationality = 'LS, Los Santos'
-        }
+        local identifier = get_player_unique_id(source)
+		local result = MySQL.Sync.fetchAll('SELECT * FROM `users` WHERE identifier = @identifier', {
+		['@identifier'] = identifier
+		})
+
+		if result[1]['firstname'] ~= nil then
+            player_data = {
+                firstname = result[1].firstname,
+                lastname = result[1].lastname,
+                dob = result[1]['dateofbirth'],
+                sex = result[1]['sex'],
+                nationality = 'LS, Los Santos'
+            }
+		end
+    end
+    if player_data == nil then
+        return false
+
     end
     return player_data
 end
 
+--- Registers a usable item.
+--- @param name string name of item.
+--- @return function function to execute when item is used.
+--- @usage Ns_lib.Functions.RegisterUsableItem('item_name', function(source) end)
+local function register_usable_item(name, func)
+    DebugPrint('Registering usable item: ' .. name)
+    if Config.Framework == 'qb-core' then
+        Framework.Functions.CreateUseableItem(name, func)
+    elseif Config.Framework == 'es_extended' then
+        Framework.RegisterUsableItem(name, func)
+    end
+end
 
 --- @Section Assign Functions
 Ns_lib.Functions.HasItem = has_item
 Ns_lib.Functions.GetPlayer = get_player
 Ns_lib.Functions.Inventory.Add = addItem
 Ns_lib.Functions.Inventory.Remove = removeItem
-Ns_lib.Functions.Bank.Add = addMoney
-Ns_lib.Functions.Bank.Remove = removeMoney
+Ns_lib.Functions.Money.Add = addMoney
+Ns_lib.Functions.Money.Remove = removeMoney
 Ns_lib.Functions.GetBank = get_bank
 Ns_lib.Functions.GetPlayerJob = get_player_job
 Ns_lib.Functions.GetPlayerUniqueIdentifier = get_player_unique_id
 Ns_lib.Functions.GetIdentity = get_identity
 Ns_lib.Functions.SetPlayerJob = set_player_job
+Ns_lib.Functions.RegisterUsableItem = register_usable_item
 
 
 --- @section Callbacks
@@ -282,6 +303,19 @@ Ns_lib.Functions.CreateCallback('ns_lib:server:has_item', function(source, cb, d
         player_has_item = false
     end
     cb(player_has_item)
+end)
+
+--- @section Server Events
+RegisterNetEvent("ns_lib:server:RemoveItem", function(item, count)
+    removeItem(source, item, count or 1)
+end)
+RegisterNetEvent("ns_lib:server:AddItem", function(item, count)
+    if count>1 then temp = 'items' else temp = 'item' end
+    if addItem(source, item, count or 1) then
+        Config.triggerNotify('You have received ' .. count .. ' ' ..temp , 'success', source)
+    else
+        Config.triggerNotify('You do not have enough space in your inventory', 'error', source)
+    end
 end)
 
 
