@@ -19,14 +19,16 @@ InLocation = false
 ---@param: data: The data of the target. minZ, maxZ, coords(vector4), length(optional), width(optional), icon, action(entity), event, distance (optional), canInteract(entity) [Optional], type [Optional], label
 ---@return: Target
 function CreateTarget(data)
-    local k = "ns_lib_Target#"..#Targets+1
+    DebugPrint("^5Debug^7: ^2Creating Target^7: '^6"..data.label.."^7' at ^6"..data.coords.."^7")
+    local k = #Targets+1
+    print(k)
     local vector3 = vector3(data.coords.x, data.coords.y, data.coords.z)
     local heading = data.coords.w or 0.0
     local length = data.length or 1.5
     local width = data.width or 1.5
     if Config.Target == "none" or Config.Target == nil then
         local Zone = BoxZone:Create(vector3, length, width, {name = "box_zone", debugPoly = Config.Debug, heading = heading, minZ = data.minZ or data.coords.z - 1, maxZ = data.maxZ or data.coords.z + 1})
-        Targets[k] = ComboZone:Create({Zone}, {name = k, debugPoly = Config.Debug})
+        Targets[k] = ComboZone:Create({Zone}, {name = "ns_lib_Target#"..k, debugPoly = Config.Debug})
         Targets[k]:onPlayerInOut(function(isPointInside, _, _)
             if isPointInside then
                 InLocation = true
@@ -71,9 +73,9 @@ function CreateTarget(data)
         exports.ox_target:addBoxZone(Targets[k])
     else
         Targets[k] =
-        exports[Config.Target]:AddBoxZone(k, vector3, length, width,
+        exports[Config.Target]:AddBoxZone("ns_lib_Target#"..k, vector3, length, width,
             {
-                name = k,
+                name = "ns_lib_Target#"..k,
                 heading = heading,
                 debugPoly=Config.Debug,
                 minZ = data.minZ or data.coords.z - 1,
@@ -112,6 +114,7 @@ function RemoveTarget(target)
     else
         exports[Config.Target]:RemoveZone(target)
     end
+    DebugPrint("^5Debug^7: ^2Removing Target^7: '^6"..target.."^7'")
 end
 
 --- On resource stop
