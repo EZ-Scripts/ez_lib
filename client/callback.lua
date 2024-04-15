@@ -9,7 +9,18 @@ function TriggerCallback(name, data)
     local cb_id = math.random(1, 1000000)
     Ns_lib.Callbacks[cb_id] = -1
     TriggerServerEvent('ns_lib:server:trigger_callback', name, cb_id, data)
-    return cb_id
+
+    local res = Ns_lib.Callbacks[cb_id]
+    while res ~= nil do
+        Wait(0)
+        if res == -1 then
+        else
+            Ns_lib.Callbacks[cb_id] = nil
+            return res
+        end
+        res = Ns_lib.Callbacks[cb_id]
+    end
+    return false
 end
 
 RegisterNetEvent("ns_lib:client:callback_result", function(cb_id, result)
@@ -18,6 +29,7 @@ RegisterNetEvent("ns_lib:client:callback_result", function(cb_id, result)
     else
         DebugPrint("Callback not found: " .. cb_id)
     end
+    return
 end)
 
 Ns_lib.Functions.TriggerCallback = TriggerCallback
