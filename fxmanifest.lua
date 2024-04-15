@@ -7,7 +7,7 @@ version "1.0"
 description "Ns Script Library"
 
 
-shared_scripts { 'config.lua'}
+shared_scripts {'@ox_lib/init.lua', 'config.lua'}
 
 server_scripts {'server/*.lua', 'server/**/*.lua' }
 
