@@ -29,19 +29,9 @@ end)
 local function has_item(item, amount)
     local item = tostring(item)
     local amount = tonumber(amount) or 1
-    DebugPrint('Checking if player has item: ' .. item .. ' Amount: ' .. amount)
-    local id = Ns_lib.Functions.TriggerCallback('ns_lib:server:has_item', {item = item, amount = amount})
-
-    while Ns_lib.Callbacks[id] ~= nil do
-        Wait(0)
-        local res = Ns_lib.Callbacks[id]
-        if type(res) == "boolean" then
-            Ns_lib.Callbacks[id] = nil
-            return res
-        end
-    end
+    DebugPrint("^5Debug^7: ^2Checking if player has item: '^6" .. item .. "^7' Amount: '^6" .. amount)
+    return Ns_lib.Functions.TriggerCallback('ns_lib:server:has_item', {item = item, amount = amount})
 end
-
 
 --- @section Functions
 
@@ -49,6 +39,7 @@ end
 --- @return table
 --- @usage local player = Ns_lib.Functions.GetPlayerData(source)
 local function get_player_data()
+    DebugPrint("^5Debug^7: ^2Getting player data")
     local player
     if Config.Framework == 'qb-core' then
         player = Framework.Functions.GetPlayerData()
@@ -66,9 +57,27 @@ local function get_player_job()
     return playerData.job.name
 end
 
+--- Gets all players in server
+--- @return table
+--- @usage local players = Ns_lib.Functions.GetPlayers()
+local function get_players()
+    local players = {}
+    if Config.Framework == 'qb-core' then
+        players = Framework.Functions.GetPlayers()
+    elseif Config.Framework == 'es_extended' then
+        players = Framework.Game.GetPlayers()
+    end
+    return players
+end
+
 --- @Section Assign Functions
 Ns_lib.Functions.HasItem = has_item
 Ns_lib.Functions.GetPlayerData = get_player_data
 Ns_lib.Functions.GetPlayerJob = get_player_job
+Ns_lib.Functions.GetPlayers = get_players
+
+
+--- @section Client Events
+
 
 
