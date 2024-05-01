@@ -68,5 +68,36 @@ local function InputMenu(title, submittext, options)
     end
 end
 
+--- Function for menu
+---@param title string The title of the menu
+---@param options table The options for the menu(String title, String label, String image, String event, Table args, Boolean disabled)
+---@usage Ns_lib.Functions.Menu("Test",)
+local function Menu(title, options)
+    local menu = {}
+    if Config.Menu.Menu == "qb" then
+        menu[#menu + 1] = { header = title, txt = "", isMenuHeader = true }
+        menu[#menu+1] = { icon = "fas fa-circle-xmark", header = "", txt = "close", params = { event = "" } }
+    end
+    for k, v in pairs(options) do
+        if Config.Menu.Menu == "qb" then
+            v.label = string.gsub(v.label, "\n", "<br>")
+        end
+        v.header = v.title
+        v.txt = v.label
+        v.params = { event = v.event, args = v.args }
+        v.description = v.label
+        v.icon = v.image
+        menu[#menu+1] = v
+    end
+    if Config.Menu.Menu == "qb" then
+        exports['qb-menu']:openMenu(menu)
+    elseif Config.Menu.Menu == "ox" then
+        exports.ox_lib:registerContext({id = 'Ns_lib', title = title, position = 'top-right', options = menu })
+		exports.ox_lib:showContext("Ns_lib")
+    else
+    end
+end
+
 ---@section Assign Functions
 Ns_lib.Functions.InputMenu = InputMenu
+Ns_lib.Functions.Menu = Menu
