@@ -51,6 +51,22 @@ function Look(coords)
 	end
 end
 
+--- Function to create a Prop at a specific location
+---@param model string The model of the prop
+---@param coords vector4 The coordinates to spawn the prop
+---@param synced boolean Whether to network the prop or not
+---@param frozen boolean Whether the prop should be frozen or not
+---@return integer
+---@usage Ns_lib.Functions.CreateProp("prop_test", vector4(0.0, 0.0, 0.0, 0.0), false, true)
+local function CreateProp(model, coords, synced, frozen)
+	LoadModel(model)
+	local prop = CreateObject(GetHashKey(model), coords.x, coords.y, coords.z -1, synced or false, synced or false, false)
+	SetEntityHeading(prop, coords.w)
+	FreezeEntityPosition(prop, frozen or true)
+	return prop
+end
+
 ---@section Assign Functions
 Ns_lib.Functions.MakeBlip = MakeBlip
 Ns_lib.Functions.Look = Look
+Ns_lib.Functions.CreateProp = CreateProp

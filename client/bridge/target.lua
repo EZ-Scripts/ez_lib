@@ -101,6 +101,7 @@ function CreateTarget(data)
             }
         )
     end
+    print(Targets[k])
     return Targets[k]
 end
 
