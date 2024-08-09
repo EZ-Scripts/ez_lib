@@ -2,10 +2,10 @@
 --- @description Framework system bridge for FiveM
 
 Framework = Framework or nil
-Ns_lib = Ns_lib or {}
-Ns_lib.Functions = Ns_lib.Functions or {}
-Ns_lib.Functions.Inventory = Ns_lib.Functions.Inventory or {}
-Ns_lib.Functions.Money = Ns_lib.Functions.Money or {}
+Ez_lib = Ez_lib or {}
+Ez_lib.Functions = Ez_lib.Functions or {}
+Ez_lib.Functions.Inventory = Ez_lib.Functions.Inventory or {}
+Ez_lib.Functions.Money = Ez_lib.Functions.Money or {}
 
 --- @section Initialization
 
@@ -15,14 +15,13 @@ CreateThread(function()
     while GetResourceState(Config.Framework) ~= 'started' do
         Wait(500)
     end
+    DebugPrint("Framework", Config.Framework)
     if Config.Framework == 'qb-core' then
-        DebugPrint('Framework: qb-core')
         Framework = exports['qb-core']:GetCoreObject()
     elseif Config.Framework == 'es_extended' then
-        DebugPrint('Framework: es_extended')
         Framework = exports['es_extended']:getSharedObject()
     else
-        DebugPrint('Framework not found')
+        -- Add more frameworks here
     end
 end)
 
@@ -32,7 +31,7 @@ end)
 --- Retrieves player data from the server based on the framework.
 --- @param source source Player source identifier.
 --- @return Player data object.
---- @usage local player = Ns_lib.Functions.get_player(source)
+--- @usage local player = Ez_lib.Functions.get_player(source)
 local function get_player(source)
     local player
     if Config.Framework == 'qb-core' then
@@ -48,25 +47,25 @@ end
 --- @param item_name string Name of the item to check.
 --- @param item_amount integer (Optional) Amount of the item to check for.
 --- @return boolean
---- @usage local has_item = Ns_lib.Functions.HasItem(source, 'item_name', item_amount)
+--- @usage local has_item = Ez_lib.Functions.HasItem(source, 'item_name', item_amount)
 local function has_item(source, item_name, item_amount)
     local player = get_player(source)
-
     if not player then return false end
     item_amount = item_amount or 1
-    DebugPrint('Checking if player has item: ' .. item_name .. ' Amount: ' .. item_amount)
-
+    local has_item = false
     if Config.Framework == 'qb-core' then
         local item = player.Functions.GetItemByName(item_name)
-        return item ~= nil and item.amount >= item_amount
+        if item ~= nil and item.amount >= item_amount then
+            has_item =  true
+        end
     elseif Config.Framework == 'es_extended' then
         local item = player.getInventoryItem(item_name)
-        return item ~= nil and item.count >= item_amount
-        --[[local count = exports.ox_inventory:Search(source, 'count', item_name)
-        return count ~= nil and count >= item_amount]]
+        if item ~= nil and item.count >= item_amount then
+            has_item =  true
+        end
     end
-
-    return false
+    DebugPrint("Has Item (id: "..source..")", item_name .. ' Amount: ' .. item_amount.." | "..tostring(has_item))
+    return has_item
 end
 
 --- Adjusts the player's inventory based on action.
@@ -75,8 +74,8 @@ end
 --- @param item string Item to adjust in the inventory.
 --- @param count integer Amount of the item to adjust.
 --- @param item_data table (Optional) Item data to add to the inventory.
---- @usage Ns_lib.Functions.Inventory.Add(source, 'item_name', item_amount, item_data)
---- @usage Ns_lib.Functions.Inventory.Remove(source, 'item_name', item_amount)
+--- @usage Ez_lib.Functions.Inventory.Add(source, 'item_name', item_amount, item_data)
+--- @usage Ez_lib.Functions.Inventory.Remove(source, 'item_name', item_amount)
 --- @return boolean
 local function adjust_inventory(source, action, item, count, item_data)
     local player = get_player(source)
@@ -108,8 +107,8 @@ end
 --- @param action string Action to perform on the bank balance ('add' or 'remove').
 --- @param type string Type of account(cash or bank).
 --- @param amount integer Amount to adjust the bank balance by.
---- @usage Ns_lib.Functions.Money.Add(source, 'cash', 100)
---- @usage Ns_lib.Functions.Money.Remove(source, 'bank', 100)
+--- @usage Ez_lib.Functions.Money.Add(source, 'cash', 100)
+--- @usage Ez_lib.Functions.Money.Remove(source, 'bank', 100)
 local function adjust_balance(source, action, type, amount)
     local player = get_player(source)
     if not player then return false end
@@ -147,8 +146,8 @@ end
 --- @param source source Player source identifier.
 --- @param type string Type of account(cash or bank).
 --- @return integer
---- @usage local cash = Ns_lib.Functions.GetBank(source, 'cash')
---- @usage local bank = Ns_lib.Functions.GetBank(source, 'bank')
+--- @usage local cash = Ez_lib.Functions.GetBank(source, 'cash')
+--- @usage local bank = Ez_lib.Functions.GetBank(source, 'bank')
 local function get_bank(source, type)
     local player = get_player(source)
     if not player then return false end
@@ -169,7 +168,7 @@ end
 --- Get the job of a player by their source identifier.
 --- @param source source The player's source identifier.
 --- @return table
---- @usage local player_job = Ns_lib.Functions.GetPlayerJob(source)
+--- @usage local player_job = Ez_lib.Functions.GetPlayerJob(source)
 local function get_player_job(source)
     local player_job = {}
     local player = get_player(source)
@@ -194,7 +193,7 @@ end
 --- @param source source The player's source identifier.
 --- @param job string The job name to set.
 --- @param grade integer The job grade to set.
---- @usage Ns_lib.Functions.SetPlayerJob(source, 'police', 1)
+--- @usage Ez_lib.Functions.SetPlayerJob(source, 'police', 1)
 local function set_player_job(source, job, grade)
     local player = get_player(source)
     if not player then return false end
@@ -208,7 +207,7 @@ end
 --- Get player id from the server based on the framework.
 --- @param source source Player source identifier.
 --- @return string
---- @usage local player_id = Ns_lib.Functions.GetPlayerUniqueIdentifier(source)
+--- @usage local player_id = Ez_lib.Functions.GetPlayerUniqueIdentifier(source)
 local function get_player_unique_id(source)
     local player_id
     local player = get_player(source)
@@ -224,7 +223,7 @@ end
 --- Retrieves a player's identity information depending on the framework.
 --- @param source source source identifier.
 --- @return table
---- @usage local player_identity = Ns_lib.Functions.GetIdentity(source)
+--- @usage local player_identity = Ez_lib.Functions.GetIdentity(source)
 local function get_identity(source)
     local player_data = nil
     if Config.Framework == 'qb-core' then
@@ -262,9 +261,9 @@ end
 --- Registers a usable item.
 --- @param name string name of item.
 --- @return function function to execute when item is used.
---- @usage Ns_lib.Functions.RegisterUsableItem('item_name', function(source) end)
+--- @usage Ez_lib.Functions.RegisterUsableItem('item_name', function(source) end)
 local function register_usable_item(name, func)
-    DebugPrint('Registering usable item: ' .. name)
+    DebugPrint('Registering usable item', name)
     if Config.Framework == 'qb-core' then
         Framework.Functions.CreateUseableItem(name, func)
     elseif Config.Framework == 'es_extended' then
@@ -273,43 +272,35 @@ local function register_usable_item(name, func)
 end
 
 --- @Section Assign Functions
-Ns_lib.Functions.HasItem = has_item
-Ns_lib.Functions.GetPlayer = get_player
-Ns_lib.Functions.Inventory.Add = addItem
-Ns_lib.Functions.Inventory.Remove = removeItem
-Ns_lib.Functions.Money.Add = addMoney
-Ns_lib.Functions.Money.Remove = removeMoney
-Ns_lib.Functions.GetBank = get_bank
-Ns_lib.Functions.GetPlayerJob = get_player_job
-Ns_lib.Functions.GetPlayerUniqueIdentifier = get_player_unique_id
-Ns_lib.Functions.GetIdentity = get_identity
-Ns_lib.Functions.SetPlayerJob = set_player_job
-Ns_lib.Functions.RegisterUsableItem = register_usable_item
+Ez_lib.Functions.HasItem = has_item
+Ez_lib.Functions.GetPlayer = get_player
+Ez_lib.Functions.Inventory.Add = addItem
+Ez_lib.Functions.Inventory.Remove = removeItem
+Ez_lib.Functions.Money.Add = addMoney
+Ez_lib.Functions.Money.Remove = removeMoney
+Ez_lib.Functions.GetBank = get_bank
+Ez_lib.Functions.GetPlayerJob = get_player_job
+Ez_lib.Functions.GetPlayerUniqueIdentifier = get_player_unique_id
+Ez_lib.Functions.GetIdentity = get_identity
+Ez_lib.Functions.SetPlayerJob = set_player_job
+Ez_lib.Functions.RegisterUsableItem = register_usable_item
 
 
 --- @section Callbacks
 
 --- Callback to check if a player has an item in their inventory.
-Ns_lib.Functions.CreateCallback('ns_lib:server:has_item', function(source, cb, data)
+Ez_lib.Functions.CreateCallback('ez_lib:server:has_item', function(source, cb, data)
     local item_name = data.item
     local item_amount = data.amount or 1
     local player_has_item = false
-    DebugPrint('Checking if player has item: ' .. item_name)
-    if Ns_lib.Functions.HasItem(source, item_name, item_amount) then
-        DebugPrint('Player has item: ' .. item_name)
-        player_has_item = true
-    else
-        DebugPrint('Player does not have item: ' .. item_name)
-        player_has_item = false
-    end
-    cb(player_has_item)
+    cb(Ez_lib.Functions.HasItem(source, item_name, item_amount))
 end)
 
 --- @section Server Events
-RegisterNetEvent("ns_lib:server:RemoveItem", function(item, count)
+RegisterNetEvent("ez_lib:server:RemoveItem", function(item, count)
     removeItem(source, item, count or 1)
 end)
-RegisterNetEvent("ns_lib:server:AddItem", function(item, count)
+RegisterNetEvent("ez_lib:server:AddItem", function(item, count)
     if count>1 then temp = 'items' else temp = 'item' end
     if addItem(source, item, count or 1) then
         Config.triggerNotify('You have received ' .. count .. ' ' ..temp , 'success', source)

@@ -1,13 +1,13 @@
 ---@module Target
 ---@description Target system bridge for FiveM
 
-Ns_lib = Ns_lib or {}
-Ns_lib.Functions = Ns_lib.Functions or {}
+Ez_lib = Ez_lib or {}
+Ez_lib.Functions = Ez_lib.Functions or {}
 
 --- Function to check if resource exists
 CreateThread(function()
     if (Config.Target ~= "none" or Config.Target ~= nil) and GetResourceState(Config.Target) ~= "started" then
-        DebugPrint("Target resource not found")
+        DebugPrint("Target resource not found", "Contact server administration to fix this issue")
         return
     end
 end)
@@ -19,7 +19,7 @@ InLocation = false
 ---@param: data: The data of the target. minZ, maxZ, coords(vector4), length(optional), width(optional), icon, action(entity), event, distance (optional), canInteract(entity) [Optional], type [Optional], label
 ---@return: Target
 function CreateTarget(data)
-    DebugPrint("^5Debug^7: ^2Creating Target^7: '^6"..data.label.."^7' at ^6"..data.coords.."^7")
+    DebugPrint("Creating Target", data.label.."^7' at ^6"..data.coords.."^7")
     local k = #Targets+1
     print(k)
     local vector3 = vector3(data.coords.x, data.coords.y, data.coords.z)
@@ -28,7 +28,7 @@ function CreateTarget(data)
     local width = data.width or 1.5
     if Config.Target == "none" or Config.Target == nil then
         local Zone = BoxZone:Create(vector3, length, width, {name = "box_zone", debugPoly = Config.Debug, heading = heading, minZ = data.minZ or data.coords.z - 1, maxZ = data.maxZ or data.coords.z + 1})
-        Targets[k] = ComboZone:Create({Zone}, {name = "ns_lib_Target#"..k, debugPoly = Config.Debug})
+        Targets[k] = ComboZone:Create({Zone}, {name = "ez_lib_Target#"..k, debugPoly = Config.Debug})
         Targets[k]:onPlayerInOut(function(isPointInside, _, _)
             if isPointInside then
                 InLocation = true
@@ -73,9 +73,9 @@ function CreateTarget(data)
         exports.ox_target:addBoxZone(Targets[k])
     else
         Targets[k] =
-        exports[Config.Target]:AddBoxZone("ns_lib_Target#"..k, vector3, length, width,
+        exports[Config.Target]:AddBoxZone("ez_lib_Target#"..k, vector3, length, width,
             {
-                name = "ns_lib_Target#"..k,
+                name = "ez_lib_Target#"..k,
                 heading = heading,
                 debugPoly=Config.Debug,
                 minZ = data.minZ or data.coords.z - 1,
@@ -101,7 +101,6 @@ function CreateTarget(data)
             }
         )
     end
-    print(Targets[k])
     return Targets[k]
 end
 
@@ -115,8 +114,7 @@ function RemoveTarget(target)
     else
         exports[Config.Target]:RemoveZone(target)
     end
-    DebugPrint("^5Debug^7: ^2Removing Target^7: '^6"..target.."^7'")
-end
+    DebugPrint("Removing Target", target)
 
 --- On resource stop
 AddEventHandler("onResourceStop", function(resource)
@@ -136,5 +134,5 @@ AddEventHandler("onResourceStop", function(resource)
 end)
 
 --- @Section Assign Functions
-Ns_lib.Functions.CreateTarget = CreateTarget
-Ns_lib.Functions.RemoveTarget = RemoveTarget
+Ez_lib.Functions.CreateTarget = CreateTarget
+Ez_lib.Functions.RemoveTarget = RemoveTarget

@@ -2,12 +2,12 @@ fx_version "cerulean"
 game "gta5"
 lua54 'yes'
 
-name "ns_lib"
+name "ez_lib"
 version "1.0"
 description "Ns Script Library"
 
 
-shared_scripts {'@ox_lib/init.lua', 'config.lua'}
+shared_scripts {'@ox_lib/init.lua', 'config.lua'} -- Remove ox_lib if you are not using it
 
 server_scripts {'server/*.lua', 'server/**/*.lua' }
 

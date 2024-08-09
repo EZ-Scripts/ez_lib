@@ -2,8 +2,8 @@
 --- @description Framework system bridge for FiveM
 
 Framework = Framework or nil
-Ns_lib = Ns_lib or {}
-Ns_lib.Functions = Ns_lib.Functions or {}
+Ez_lib = Ez_lib or {}
+Ez_lib.Functions = Ez_lib.Functions or {}
 
 --- @section Initialization
 
@@ -26,20 +26,21 @@ end)
 ---@param item string The item to check
 ---@param amount integer The amount of the item to check
 ---@param cb function Callback function
+---@Deprecated
 local function has_item(item, amount)
     local item = tostring(item)
     local amount = tonumber(amount) or 1
-    DebugPrint("^5Debug^7: ^2Checking if player has item: '^6" .. item .. "^7' Amount: '^6" .. amount)
-    return Ns_lib.Functions.TriggerCallback('ns_lib:server:has_item', {item = item, amount = amount})
+    DebugPrint("2Checking if player has item", amount)
+    return Ez_lib.Functions.TriggerCallback('ez_lib:server:has_item', {item = item, amount = amount})
 end
 
 --- @section Functions
 
 --- Retrieves player data based on the framework
 --- @return table
---- @usage local player = Ns_lib.Functions.GetPlayerData(source)
+--- @usage local player = Ez_lib.Functions.GetPlayerData(source)
 local function get_player_data()
-    DebugPrint("^5Debug^7: ^2Getting player data")
+    DebugPrint("Getting player data", "this player")
     local player
     if Config.Framework == 'qb-core' then
         player = Framework.Functions.GetPlayerData()
@@ -51,7 +52,7 @@ end
 
 --- Gets the player's job based on the framework
 --- @return string
---- @usage local job = Ns_lib.Functions.GetPlayerJob()
+--- @usage local job = Ez_lib.Functions.GetPlayerJob()
 local function get_player_job()
     local playerData = get_player_data()
     return playerData.job.name
@@ -59,7 +60,7 @@ end
 
 --- Gets all players in server
 --- @return table
---- @usage local players = Ns_lib.Functions.GetPlayers()
+--- @usage local players = Ez_lib.Functions.GetPlayers()
 local function get_players()
     local players = {}
     if Config.Framework == 'qb-core' then
@@ -70,11 +71,40 @@ local function get_players()
     return players
 end
 
+-- Get player items
+local function get_player_items()
+    local playerData = get_player_data()
+    local items = {}
+
+    if Config.Framework == 'qb-core' then
+        for k, v in pairs(playerData.items) do
+            if items[v.name] then
+                items[v.name].amount = items[v.name].amount + v.count
+            else
+                items[v.name] = { amount = v.amount, label = v.label, name = v.name, weight = Framework.Shared.Items[v.name].weight }
+            end
+        end
+    elseif Config.Framework == 'es_extended' then
+        for k,v in ipairs(playerData.inventory) do
+            if v.count > 0 then
+                if items[v.name] then
+                    items[v.name].amount = items[v.name].amount + v.count
+                else
+                    items[v.name] = { amount = v.count, label = v.label, name = v.name, weight = v.weight }
+                end
+            end
+        end
+    else
+        -- Your custom code here
+    end
+end
+
 --- @Section Assign Functions
-Ns_lib.Functions.HasItem = has_item
-Ns_lib.Functions.GetPlayerData = get_player_data
-Ns_lib.Functions.GetPlayerJob = get_player_job
-Ns_lib.Functions.GetPlayers = get_players
+Ez_lib.Functions.HasItem = has_item -- Deprecated
+Ez_lib.Functions.GetPlayerData = get_player_data
+Ez_lib.Functions.GetPlayerJob = get_player_job
+Ez_lib.Functions.GetPlayers = get_players
+Ez_lib.Functions.GetPlayerItems = get_player_items
 
 
 --- @section Client Events

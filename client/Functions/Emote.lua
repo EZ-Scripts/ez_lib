@@ -2,9 +2,9 @@
 ---@description Emote function Written by andristum Edited by Rayaan Uddin
 ---@auther andristum
 
-Ns_lib = Ns_lib or {}
-Ns_lib.Functions = Ns_lib.Functions or {}
-Ns_lib.Functions.Emote = Ns_lib.Functions.Emote or {}
+Ez_lib = Ez_lib or {}
+Ez_lib.Functions = Ez_lib.Functions or {}
+Ez_lib.Functions.Emote = Ez_lib.Functions.Emote or {}
 
 local PlayerProps = {}
 local hashSkinMale = GetHashKey("mp_m_freemode_01")
@@ -161,6 +161,6 @@ local function OnEmotePlay(EmoteName)
 end
 
 ---@section Assign Functions
-Ns_lib.Functions.Emote.OnEmotePlay = OnEmotePlay
-Ns_lib.Functions.Emote.DestroyAllProps = DestroyAllProps
-Ns_lib.Functions.Emote.AddPropToPlayer = AddPropToPlayer
+Ez_lib.Functions.Emote.OnEmotePlay = OnEmotePlay
+Ez_lib.Functions.Emote.DestroyAllProps = DestroyAllProps
+Ez_lib.Functions.Emote.AddPropToPlayer = AddPropToPlayer

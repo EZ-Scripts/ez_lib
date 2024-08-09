@@ -1,14 +1,14 @@
 ---@module Ox vs Qb Menus
 ---@description Ox vs Qb Menus
 
-Ns_lib = Ns_lib or {}
-Ns_lib.Functions = Ns_lib.Functions or {}
+Ez_lib = Ez_lib or {}
+Ez_lib.Functions = Ez_lib.Functions or {}
 
 --- Function for input menu
 ---@param title string The title of the menu
 ---@param submitText string The text for the submit button
 ---@param options table The options for the menu (String type, String label, String value, String name, Table options, Boolean required)
----@usage Ns_lib.Functions.InputMenu("Test", "Submit", {type = "text", label = "Test", value = "Test"})
+---@usage Ez_lib.Functions.InputMenu("Test", "Submit", {type = "text", label = "Test", value = "Test"})
 local function InputMenu(title, submittext, options)
     if Config.Menu.Input == "qb" then
         local multi = {}
@@ -71,7 +71,7 @@ end
 --- Function for menu
 ---@param title string The title of the menu
 ---@param options table The options for the menu(String title, String label, String image, String event, Table args, Boolean disabled)
----@usage Ns_lib.Functions.Menu("Test",)
+---@usage Ez_lib.Functions.Menu("Test",)
 local function Menu(title, options)
     local menu = {}
     if Config.Menu.Menu == "qb" then
@@ -92,12 +92,12 @@ local function Menu(title, options)
     if Config.Menu.Menu == "qb" then
         exports['qb-menu']:openMenu(menu)
     elseif Config.Menu.Menu == "ox" then
-        exports.ox_lib:registerContext({id = 'Ns_lib', title = title, position = 'top-right', options = menu })
-		exports.ox_lib:showContext("Ns_lib")
+        exports.ox_lib:registerContext({id = 'Ez_lib', title = title, position = 'top-right', options = menu })
+		exports.ox_lib:showContext("Ez_lib")
     else
     end
 end
 
 ---@section Assign Functions
-Ns_lib.Functions.InputMenu = InputMenu
-Ns_lib.Functions.Menu = Menu
+Ez_lib.Functions.InputMenu = InputMenu
+Ez_lib.Functions.Menu = Menu

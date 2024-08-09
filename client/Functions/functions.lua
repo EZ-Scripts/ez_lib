@@ -1,11 +1,11 @@
 ---@module Functions
 ---@description Functions using fivem nattives
 
-Ns_lib = Ns_lib or {}
-Ns_lib.Functions = Ns_lib.Functions or {}
+Ez_lib = Ez_lib or {}
+Ez_lib.Functions = Ez_lib.Functions or {}
 
 function LoadAnimDict(dict)
-	DebugPrint("^5Debug^7: ^2Loading Anim Dictionary^7: '^6"..dict.."^7'")
+	DebugPrint("Loading animation dictionary", dict)
 	while not HasAnimDictLoaded(dict) do
 		RequestAnimDict(dict)
 		Wait(5)
@@ -14,6 +14,7 @@ end
 
 function LoadModel(model)
 	time = 0
+	DebugPrint("Loading model", model)
     while not HasModelLoaded(GetHashKey(model)) do
 		if time > 1000 then break end
 		RequestModel(GetHashKey(model))
@@ -25,9 +26,9 @@ end
 --- Creates a blip on the map
 ---@param data table
 ---@return integer
----@usage Ns_lib.Functions.MakeBlip({name = "Test", coords = vector3(0.0, 0.0, 0.0), sprite = 1, col = 0, scale = 0.7, disp = 6, category = 0})
+---@usage Ez_lib.Functions.MakeBlip({name = "Test", coords = vector3(0.0, 0.0, 0.0), sprite = 1, col = 0, scale = 0.7, disp = 6, category = 0})
 local function MakeBlip(data)
-	DebugPrint("^5Debug^7: ^2Creating Blip^7: '^6"..data.name.."^7' at ^6"..data.coords.."^7")
+	DebugPrint("Creating Blip", data.name.."^7' at ^6"..data.coords.."^7")
 	local blip = AddBlipForCoord(data.coords)
 	SetBlipAsShortRange(blip, true)
 	SetBlipSprite(blip, data.sprite or 1)
@@ -43,7 +44,7 @@ end
 
 --- Function to make player look and move at a specific location
 ---@param coords vector The coordinates to look at
----@usage Ns_lib.Functions.Look(vector3(0.0, 0.0, 0.0))
+---@usage Ez_lib.Functions.Look(vector3(0.0, 0.0, 0.0))
 function Look(coords)
 	if not IsPedHeadingTowardsPosition(PlayerPedId(), coords.xyz, 10.0) then
 		TaskTurnPedToFaceCoord(PlayerPedId(), coords.xyz, 1500)
@@ -57,7 +58,7 @@ end
 ---@param synced boolean Whether to network the prop or not
 ---@param frozen boolean Whether the prop should be frozen or not
 ---@return integer
----@usage Ns_lib.Functions.CreateProp("prop_test", vector4(0.0, 0.0, 0.0, 0.0), false, true)
+---@usage Ez_lib.Functions.CreateProp("prop_test", vector4(0.0, 0.0, 0.0, 0.0), false, true)
 local function CreateProp(model, coords, synced, frozen)
 	LoadModel(model)
 	local prop = CreateObject(GetHashKey(model), coords.x, coords.y, coords.z -1, synced or false, synced or false, false)
@@ -67,6 +68,6 @@ local function CreateProp(model, coords, synced, frozen)
 end
 
 ---@section Assign Functions
-Ns_lib.Functions.MakeBlip = MakeBlip
-Ns_lib.Functions.Look = Look
-Ns_lib.Functions.CreateProp = CreateProp
+Ez_lib.Functions.MakeBlip = MakeBlip
+Ez_lib.Functions.Look = Look
+Ez_lib.Functions.CreateProp = CreateProp
