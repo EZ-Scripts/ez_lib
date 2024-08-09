@@ -1,8 +1,9 @@
 Config = {}
 
 Config.Debug = true -- Set to false to disable debug messages
-Config.Framework = "qb-core" -- "qb-core" or "es_extended"
+Config.Framework = "qb-core" -- "qb-core" or "es_extended" or "other"
 Config.Target = "qb-target" -- "none" or "ox_target" or "qb-target", etc
+Config.SQL = "oxmysql" -- "oxmysql" or "ghmattimysql" or "mysql-async", etc
 Config.Menu = { -- or other(Update the menu.lua file)
 	Menu = "qb", -- "ox" or "qb"
 	Input = "ox", -- "ox" or "qb"

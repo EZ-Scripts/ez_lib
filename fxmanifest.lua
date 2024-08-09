@@ -9,7 +9,12 @@ description "Ns Script Library"
 
 shared_scripts {'@ox_lib/init.lua', 'config.lua'} -- Remove ox_lib if you are not using it
 
-server_scripts {'server/*.lua', 'server/**/*.lua' }
+server_scripts {
+    '@oxmysql/lib/MySQL.lua', -- Remove oxmysql if you are not using it
+	-- '@mysql-async/lib/MySQL.lua', -- Remove mysql-async if you are not using it
+    'server/*.lua',
+    'server/**/*.lua'
+}
 
 client_scripts {
     'client/*.lua', 'client/**/*.lua',
