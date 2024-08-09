@@ -60,9 +60,8 @@ end
 --- @usage Ez_lib.Functions.SendToDiscord("Test", "This is a test message", 16711680)
 local DISCORD_NAME = "EZ Scripts"
 local DISCORD_IMAGE = "https://cdn.discordapp.com/attachments/890000000000000000/890000000000000000/ez_scripts.png"
-DiscordWebhook = "CHANGE_WEBHOOK"
-local function send_to_discord(name, message, color)
-	if DiscordWebhook == "CHANGE_WEBHOOK" then
+local function send_to_discord(webhook, name, message, color)
+	if webhook == "CHANGE_WEBHOOK" then
 	else
 		local connect = {
             {
@@ -74,7 +73,7 @@ local function send_to_discord(name, message, color)
                 },
             },
 	    }
-		PerformHttpRequest(DiscordWebhook, function(err, text, headers) end, 'POST', json.encode({username = DISCORD_NAME, embeds = connect, avatarrl = DISCORD_IMAGE}), { ['Content-Type'] = 'application/json' })
+		PerformHttpRequest(webhook, function(err, text, headers) end, 'POST', json.encode({username = DISCORD_NAME, embeds = connect, avatarrl = DISCORD_IMAGE}), { ['Content-Type'] = 'application/json' })
 	end
 end
 

@@ -271,6 +271,40 @@ local function register_usable_item(name, func)
     end
 end
 
+--- Get all jobs in server
+--- @return table
+--- @usage local jobs = Ez_lib.Functions.GetJobs()
+local function get_jobs()
+    local jobs = {}
+    local grades = {}
+    if Config.Framework == 'qb-core' then
+        for k, v in pairs(Framework.Shared.Jobs) do
+            jobs[k] = {
+                name = k,
+                label = v.label,
+            }
+            for i, j in pairs(v.grades) do
+                grades[i] = { name = j.label, payment = j.payment }
+            end
+            jobs[k].grades = grades
+        end
+    elseif Config.Framework == 'es_extended' then
+        for k, v in pairs(Framework.Jobs) do
+            jobs[k] = {
+                name = k,
+                label = v.label,
+            }
+            for i, j in pairs(v.grades) do
+                grades[i] = { name = j.label, payment = j.salary }
+            end
+            jobs[k].grades = grades
+        end
+    else
+        -- Add more frameworks here
+    end
+    return jobs
+end
+
 --- @Section Assign Functions
 Ez_lib.Functions.HasItem = has_item
 Ez_lib.Functions.GetPlayer = get_player
@@ -284,6 +318,7 @@ Ez_lib.Functions.GetPlayerUniqueIdentifier = get_player_unique_id
 Ez_lib.Functions.GetIdentity = get_identity
 Ez_lib.Functions.SetPlayerJob = set_player_job
 Ez_lib.Functions.RegisterUsableItem = register_usable_item
+Ez_lib.Functions.GetJobs = get_jobs
 
 
 --- @section Callbacks
