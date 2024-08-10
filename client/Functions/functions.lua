@@ -13,10 +13,10 @@ function LoadAnimDict(dict)
 end
 
 function LoadModel(model)
-	time = 0
+	local time = 0
 	DebugPrint("Loading model", model)
     while not HasModelLoaded(GetHashKey(model)) do
-		if time > 1000 then break end
+		if time > 5000 then DebugPrint("Loading model", "Failed") break end
 		RequestModel(GetHashKey(model))
 		Wait(10)
 		time = time + 1
@@ -27,7 +27,7 @@ end
 ---@param data table
 ---@return integer
 ---@usage Ez_lib.Functions.MakeBlip({name = "Test", coords = vector3(0.0, 0.0, 0.0), sprite = 1, col = 0, scale = 0.7, disp = 6, category = 0})
-local function MakeBlip(data)
+local function make_blip(data)
 	DebugPrint("Creating Blip", data.name.."^7' at ^6"..data.coords.."^7")
 	local blip = AddBlipForCoord(data.coords)
 	SetBlipAsShortRange(blip, true)
@@ -45,7 +45,7 @@ end
 --- Function to make player look and move at a specific location
 ---@param coords vector The coordinates to look at
 ---@usage Ez_lib.Functions.Look(vector3(0.0, 0.0, 0.0))
-function Look(coords)
+local function look(coords)
 	if not IsPedHeadingTowardsPosition(PlayerPedId(), coords.xyz, 10.0) then
 		TaskTurnPedToFaceCoord(PlayerPedId(), coords.xyz, 1500)
 		Wait(1500)
@@ -59,7 +59,7 @@ end
 ---@param frozen boolean Whether the prop should be frozen or not
 ---@return integer
 ---@usage Ez_lib.Functions.CreateProp("prop_test", vector4(0.0, 0.0, 0.0, 0.0), false, true)
-local function CreateProp(model, coords, synced, frozen)
+local function create_prop(model, coords, synced, frozen)
 	LoadModel(model)
 	local prop = CreateObject(GetHashKey(model), coords.x, coords.y, coords.z -1, synced or false, synced or false, false)
 	SetEntityHeading(prop, coords.w)
@@ -67,7 +67,39 @@ local function CreateProp(model, coords, synced, frozen)
 	return prop
 end
 
+--- Function to spawn a vehicle at a specific location
+--- @param model string The model of the vehicle
+--- @param coords vector4 The coordinates to spawn the vehicle
+--- @param cb function The callback function
+--- @param isnetworked boolean Whether to network the vehicle or not
+--- @usage Ez_lib.Functions.SpawnVehicle("adder", vector4(0.0, 0.0, 0.0, 0.0), function(veh) print(veh) end, false)
+local function spawn_vehicle(model, coords, cb, isnetworked)
+    local model = GetHashKey(model)
+    local ped = PlayerPedId()
+    if coords then
+        coords = type(coords) == 'table' and vec3(coords.x, coords.y, coords.z) or coords
+    else
+        coords = GetEntityCoords(ped)
+    end
+    local isnetworked = isnetworked or true
+    if not IsModelInCdimage(model) then
+        return
+    end
+    LoadModel(model)
+    local veh = CreateVehicle(model, coords.x, coords.y, coords.z, coords.w or 0.0, isnetworked or false, false)
+    local netid = NetworkGetNetworkIdFromEntity(veh)
+    SetVehicleHasBeenOwnedByPlayer(veh, true)
+    SetNetworkIdCanMigrate(netid, true)
+    SetVehicleNeedsToBeHotwired(veh, false)
+    SetVehRadioStation(veh, 'OFF')
+    SetModelAsNoLongerNeeded(model)
+    if cb then
+        cb(veh)
+    end
+end
+
 ---@section Assign Functions
-Ez_lib.Functions.MakeBlip = MakeBlip
-Ez_lib.Functions.Look = Look
-Ez_lib.Functions.CreateProp = CreateProp
+Ez_lib.Functions.MakeBlip = make_blip
+Ez_lib.Functions.Look = look
+Ez_lib.Functions.CreateProp = create_prop
+Ez_lib.Functions.SpawnVehicle = spawn_vehicle

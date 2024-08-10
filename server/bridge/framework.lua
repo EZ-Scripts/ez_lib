@@ -38,6 +38,8 @@ local function get_player(source)
         player = Framework.Functions.GetPlayer(source)
     elseif Config.Framework == 'es_extended' then
         player = Framework.GetPlayerFromId(source)
+    else
+        -- Add more frameworks here
     end
     return player
 end
@@ -63,6 +65,8 @@ local function has_item(source, item_name, item_amount)
         if item ~= nil and item.count >= item_amount then
             has_item =  true
         end
+    else
+        -- Add more frameworks here
     end
     DebugPrint("Has Item (id: "..source..")", item_name .. ' Amount: ' .. item_amount.." | "..tostring(has_item))
     return has_item
@@ -99,7 +103,7 @@ local function addItem(source, item, count, item_data)
     return adjust_inventory(source, 'add', item, count, item_data)
 end
 local function removeItem(source, item, count)
-    return adjust_inventory(source, 'remove', item, count)
+    return adjust_inventory(source, 'remove', item, count, nil)
 end
 
 --- Adjust the player's bank balance based on action.
@@ -338,9 +342,9 @@ end)
 RegisterNetEvent("ez_lib:server:AddItem", function(item, count)
     if count>1 then temp = 'items' else temp = 'item' end
     if addItem(source, item, count or 1) then
-        Config.triggerNotify('You have received ' .. count .. ' ' ..temp , 'success', source)
+        Config.TriggerNotify('Add Item', 'You have received ' .. count .. ' ' ..temp , 'success', source)
     else
-        Config.triggerNotify('You do not have enough space in your inventory', 'error', source)
+        Config.TriggerNotify('No Space', 'You do not have enough space in your inventory', 'error', source)
     end
 end)
 

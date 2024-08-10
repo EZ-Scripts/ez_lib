@@ -87,6 +87,9 @@ local function Menu(title, options)
         v.params = { event = v.event, args = v.args }
         v.description = v.label
         v.icon = v.image
+        if v.isServer then
+            v.serverEvent = v.event
+        end
         menu[#menu+1] = v
     end
     if Config.Menu.Menu == "qb" then

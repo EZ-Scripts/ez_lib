@@ -13,16 +13,33 @@ Config.Menu = { -- or other(Update the menu.lua file)
 ---@param: message: The message you want to send to user
 ---@param: type: The type of notification you want to send to user
 ---@param: src: The source of the player you want to send notification to
-Config.triggerNotify = function(message, type, src)
+Config.TriggerNotify = function(title, message, type, src)
     --[[if not src then	exports['okokNotify']:Alert(title, message, 6000, type)
 	else TriggerClientEvent('okokNotify:Alert', src, title, message, 6000, type) end]]
 	if not src then	TriggerEvent("QBCore:Notify", message, type)
 	else TriggerClientEvent("QBCore:Notify", src, message, type) end
 end
 
+--- Function give vehicle keys
+--- @param veh integer The vehicle to give keys
+--- @param src integer The source of the player to give keys
+--- @usage Config.GiveVehicleKeys(veh, src)
+Config.GiveVehicleKeys = function(veh, src)
+	if not src then TriggerEvent("vehiclekeys:client:SetOwner", GetVehicleNumberPlateText(veh))
+	else TriggerClientEvent("vehiclekeys:client:SetOwner", src, GetVehicleNumberPlateText(veh)) end
+end
+
+
+function DebugPrint(name, info)
+    if Config.Debug then print("^5Debug^7: ^2"..name.."^7: '^6"..info.."^7'") end
+end
+Config.DebugPrint = DebugPrint
+
+
+--- Client Side Functions
+
 --- Function to show UI to open stash in its zone
----@param: stashName: The stash name you have assigned to it, you may use if needed.
----@param: sharedStash: True=Shared, False=Personal. You may use if you want.
+--- @param label string The label to show
 Config.ShowUI = function(label)
     exports['qb-core']:DrawText("<b>[E] "..label.."</b>", 'left')
 end
@@ -30,4 +47,54 @@ end
 --- Function to hide UI to open stash in its zone
 Config.HideUI = function()
     exports['qb-core']:HideText()
+end
+
+--- Set Fuel Function
+--- @param veh integer The vehicle to set fuel
+--- @param fuel integer The fuel to set
+--- @usage Config.SetFuel(100)
+Config.SetFuel = function(veh, fuel)
+	exports["LegacyFuel"]:SetFuel(veh, fuel)
+end
+
+--- Progress bar function (Client Side Only)
+--- @param name string The name of the progress bar
+--- @param label string The label of the progress bar
+--- @param duration integer The duration of the progress bar
+--- @param useWhileDead boolean The progress bar can be used while dead
+--- @param canCancel boolean The progress bar can be cancelled
+--- @param controlDisables table The controls to disable {disableMovement, disableCarMovement, disableMouse, disableCombat}
+--- @param animation table The animation to play {animDict, anim, flags}
+--- @param prop table The prop to show {prop, bone, x, y, z, xR, yR, zR}
+--- @param prop2 table The prop to show {prop, bone, x, y, z, xR, yR, zR}
+--- @param cb function The callback function
+Config.ProgressBar = function(name, label, duration, useWhileDead, canCancel, controlDisables, animation, prop, prop2, cb, icon)
+	exports['progressbar']:Progress({
+		name = name,
+		duration = duration or 5000,
+		label = label,
+		useWhileDead = useWhileDead or false,
+		canCancel = canCancel or false,
+		controlDisables = controlDisables or {
+			disableMovement = true,
+			disableCarMovement = true,
+			disableMouse = false,
+			disableCombat = true,
+		},
+		animation = animation or {},
+		prop = prop or {},
+		propTwo = prop2 or {}
+	}, function(success)
+		cb(success)
+	end, icon)
+end
+
+--- Server Side Functions
+
+--- Add Money to Society
+--- @param society string The society to add money to
+--- @param amount integer The amount to add
+--- @usage Config.AddMoneyToSociety("police", 100)
+Config.AddMoneyToSociety = function(society, amount)
+	exports['qb-management']:AddMoney(society, amount)
 end

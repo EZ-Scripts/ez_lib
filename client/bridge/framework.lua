@@ -71,7 +71,9 @@ local function get_players()
     return players
 end
 
--- Get player items
+--- Get player items
+--- @return table
+--- @usage local items = Ez_lib.Functions.GetPlayerItems()
 local function get_player_items()
     local playerData = get_player_data()
     local items = {}
@@ -97,6 +99,7 @@ local function get_player_items()
     else
         -- Your custom code here
     end
+    return items
 end
 
 --- @Section Assign Functions

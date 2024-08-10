@@ -52,14 +52,16 @@ local function execute_sql(query)
     return result
 end
 
+local DISCORD_NAME = "EZ Scripts"
+local DISCORD_IMAGE = "https://cdn.discordapp.com/attachments/890000000000000000/890000000000000000/ez_scripts.png"
+
 --- Function to send message to discord
 --- This function is used to send message to discord
+--- @param webhook string The webhook to send message
 --- @param name string The name of the message
 --- @param message string The message to send
 --- @param color integer The color of the message
---- @usage Ez_lib.Functions.SendToDiscord("Test", "This is a test message", 16711680)
-local DISCORD_NAME = "EZ Scripts"
-local DISCORD_IMAGE = "https://cdn.discordapp.com/attachments/890000000000000000/890000000000000000/ez_scripts.png"
+--- @usage Ez_lib.Functions.SendToDiscord("CHANGE_WEBHOOK", "EZ Scripts", "Hello World", 16711680)
 local function send_to_discord(webhook, name, message, color)
 	if webhook == "CHANGE_WEBHOOK" then
 	else
