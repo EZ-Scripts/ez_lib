@@ -115,6 +115,7 @@ function RemoveTarget(target)
         exports[Config.Target]:RemoveZone(target)
     end
     DebugPrint("Removing Target", target)
+end
 
 --- On resource stop
 AddEventHandler("onResourceStop", function(resource)

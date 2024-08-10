@@ -30,7 +30,7 @@ end)
 local function has_item(item, amount)
     local item = tostring(item)
     local amount = tonumber(amount) or 1
-    DebugPrint("2Checking if player has item", amount)
+    DebugPrint("Checking if player has item", amount)
     return Ez_lib.Functions.TriggerCallback('ez_lib:server:has_item', {item = item, amount = amount})
 end
 

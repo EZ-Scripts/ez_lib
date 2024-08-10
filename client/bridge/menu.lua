@@ -84,7 +84,7 @@ local function Menu(title, options)
         end
         v.header = v.title
         v.txt = v.label
-        v.params = { event = v.event, args = v.args }
+        v.params = { event = v.event, args = v.args, isServer = v.isServer or false }
         v.description = v.label
         v.icon = v.image
         if v.isServer then

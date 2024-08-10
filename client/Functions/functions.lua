@@ -18,9 +18,10 @@ function LoadModel(model)
     while not HasModelLoaded(GetHashKey(model)) do
 		if time > 5000 then DebugPrint("Loading model", "Failed") break end
 		RequestModel(GetHashKey(model))
-		Wait(10)
-		time = time + 1
+		Wait(200)
+		time = time + 200
     end
+	DebugPrint("Loading model", "Success") 
 end
 
 --- Creates a blip on the map
@@ -69,12 +70,11 @@ end
 
 --- Function to spawn a vehicle at a specific location
 --- @param model string The model of the vehicle
---- @param coords vector4 The coordinates to spawn the vehicle
+--- @param coords table The coordinates to spawn the vehicle
 --- @param cb function The callback function
 --- @param isnetworked boolean Whether to network the vehicle or not
 --- @usage Ez_lib.Functions.SpawnVehicle("adder", vector4(0.0, 0.0, 0.0, 0.0), function(veh) print(veh) end, false)
 local function spawn_vehicle(model, coords, cb, isnetworked)
-    local model = GetHashKey(model)
     local ped = PlayerPedId()
     if coords then
         coords = type(coords) == 'table' and vec3(coords.x, coords.y, coords.z) or coords
@@ -82,11 +82,12 @@ local function spawn_vehicle(model, coords, cb, isnetworked)
         coords = GetEntityCoords(ped)
     end
     local isnetworked = isnetworked or true
-    if not IsModelInCdimage(model) then
+    if not IsModelInCdimage(GetHashKey(model)) then
         return
     end
     LoadModel(model)
-    local veh = CreateVehicle(model, coords.x, coords.y, coords.z, coords.w or 0.0, isnetworked or false, false)
+	DebugPrint("Spawning vehicle", model)
+    local veh = CreateVehicle(GetHashKey(model), coords.x, coords.y, coords.z, coords.w or 0.0, isnetworked or false, false)
     local netid = NetworkGetNetworkIdFromEntity(veh)
     SetVehicleHasBeenOwnedByPlayer(veh, true)
     SetNetworkIdCanMigrate(netid, true)

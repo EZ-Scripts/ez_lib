@@ -150,12 +150,12 @@ end
 --- @param source source Player source identifier.
 --- @param type string Type of account(cash or bank).
 --- @return integer
---- @usage local cash = Ez_lib.Functions.GetBank(source, 'cash')
---- @usage local bank = Ez_lib.Functions.GetBank(source, 'bank')
-local function get_bank(source, type)
+--- @usage local cash = Ez_lib.Functions.GetMoney(source, 'cash')
+--- @usage local bank = Ez_lib.Functions.GetMoney(source, 'bank')
+local function get_money(source, type)
     local player = get_player(source)
     if not player then return false end
-
+    DebugPrint('Getting Player Money', type)
     if Config.Framework == 'qb-core' then
         return player.Functions.GetMoney(type)
     elseif Config.Framework == 'es_extended' then
@@ -316,7 +316,7 @@ Ez_lib.Functions.Inventory.Add = addItem
 Ez_lib.Functions.Inventory.Remove = removeItem
 Ez_lib.Functions.Money.Add = addMoney
 Ez_lib.Functions.Money.Remove = removeMoney
-Ez_lib.Functions.GetBank = get_bank
+Ez_lib.Functions.GetMoney = get_money
 Ez_lib.Functions.GetPlayerJob = get_player_job
 Ez_lib.Functions.GetPlayerUniqueIdentifier = get_player_unique_id
 Ez_lib.Functions.GetIdentity = get_identity
