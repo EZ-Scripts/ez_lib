@@ -3,43 +3,12 @@ Config = {}
 Config.Debug = true -- Set to false to disable debug messages
 Config.Framework = "qb-core" -- "qb-core" or "es_extended" or "other"
 Config.Target = "qb-target" -- "none" or "ox_target" or "qb-target", etc
+Config.Inventory = "qb-inventory" -- "ox_inventory" or "qb-inventory" or "qs-inventory" or "codem-inventory", etc
 Config.SQL = "oxmysql" -- "oxmysql" or "ghmattimysql" or "mysql-async", etc
 Config.Menu = { -- or other(Update the menu.lua file)
 	Menu = "qb", -- "ox" or "qb"
 	Input = "qb", -- "ox" or "qb"
 } -- If you do not have Ox_lib, remove it from fxmanifest.lua
-
--------------------------------------------
---- Inventory Functions 
---- @description Inventory Functions
-
---- Client Side Function to open shop
---- @param name string The name of the shop
---- @param shop table The shop to open {label, slots, items = {name, price, info, type, amount, slot}}
---- @usage Config.OpenShop("shop", {label = "Shop", slots = 10, items = {name = "item", price = 100, info = {}, type = "item", amount = 1, slot = 1}})
-Config.OpenShop = function(name, shop)
-	--exports.ox_inventory:openInventory('shop', { type = name })
-	TriggerServerEvent("inventory:server:OpenInventory", "shop", name, shop)
-end
-
---- Client Side Function to open stash
---- @param name string The name of the stash
---- @param stash table The stash to open {label, slots, items = {name, price, info, type, amount, slot}}
---- @usage Config.OpenStash("stash", {label = "Stash", slots = 10, items = {name = "item", price = 100, info = {}, type = "item", amount = 1, slot = 1}})
-Config.OpenStash = function(name, stash)
-	-- exports.ox_inventory:openInventory('stash', data.stash)
-	TriggerServerEvent("inventory:server:OpenInventory", "stash", name, stash)
-end
-
---- Server Side Function to register shop
---- @param name string The name of the shop
---- @param shop table The shop to register {label, slots, items = {name, price, info, type, amount, slot}}
---- @usage Config.RegisterShop("shop", {label = "Shop", slots = 10, items = {name = "item", price = 100, info = {}, type = "item", amount = 1, slot = 1}})
-Config.RegisterShop = function(name, shop)
-	--exports.ox_inventory:RegisterShop(name, { name = shop.label, inventory = shop.items })
-end
-
-
 
 --- Funtion to notify user
 ---@param: message: The message you want to send to user
