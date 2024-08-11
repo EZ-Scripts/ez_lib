@@ -19,7 +19,26 @@ end
 local function register_shop(name, shop)
     if Config.Inventory == "ox_inventory" then
         exports.ox_inventory:RegisterShop(name, { name = shop.label, inventory = shop.items })
+    elseif Config.Inventory == "new-qb-inventory" then
+        exports['qb-inventory']:CreateShop({
+            name = name,
+            label = shop.label,
+            slots = #shop.items,
+            items = shop.items
+        })
     end
+end
+
+if Config.Inventory == "new-qb-inventory" then
+    RegisterNetEvent("inventory:server:OpenInventory", function(type, name, stash)
+        if type == "stash" then
+            print(stash)
+            stash.label = name
+            exports['qb-inventory']:OpenInventory(source, name, stash)
+        elseif type == "shop" then
+            exports['qb-inventory']:OpenShop(source, name)
+        end
+    end)
 end
 
 --- @Section Assign Functions

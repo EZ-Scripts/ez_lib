@@ -114,22 +114,14 @@ function RemoveTarget(target)
     else
         exports[Config.Target]:RemoveZone(target)
     end
-    DebugPrint("Removing Target", target)
+    DebugPrint("Removing Target", json.encode(target))
 end
 
 --- On resource stop
 AddEventHandler("onResourceStop", function(resource)
-    if Config.Target == "none" or Config.Target == nil then
+    if resource == GetCurrentResourceName() then
         for k, v in pairs(Targets) do
-            v:destroy()
-        end
-    elseif Config.Target == "ox_target" then
-        for k, v in pairs(Targets) do
-            exports.ox_target:removeZone(v)
-        end
-    else
-        for k, v in pairs(Targets) do
-            exports[Config.Target]:RemoveZone(v)
+            RemoveTarget(v)
         end
     end
 end)

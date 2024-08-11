@@ -3,7 +3,7 @@ Config = {}
 Config.Debug = true -- Set to false to disable debug messages
 Config.Framework = "qb-core" -- "qb-core" or "es_extended" or "other"
 Config.Target = "qb-target" -- "none" or "ox_target" or "qb-target", etc
-Config.Inventory = "qb-inventory" -- "ox_inventory" or "qb-inventory" or "qs-inventory" or "codem-inventory", etc
+Config.Inventory = "new-qb-inventory" -- "ox_inventory" or "new-qb-inventory" or "qb-inventory" or "qs-inventory" or "codem-inventory", etc
 Config.SQL = "oxmysql" -- "oxmysql" or "ghmattimysql" or "mysql-async", etc
 Config.Menu = { -- or other(Update the menu.lua file)
 	Menu = "qb", -- "ox" or "qb"
@@ -89,7 +89,8 @@ Config.ProgressBar = function(name, label, duration, useWhileDead, canCancel, co
 		animation = animation or {},
 		prop = prop or {},
 		propTwo = prop2 or {}
-	}, function(success)
+	}, function(cancelled)
+		local success = not cancelled -- Get if successfull then pass it through to function
 		cb(success)
 	end, icon)
 end

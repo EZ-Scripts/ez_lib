@@ -13,7 +13,7 @@ Ez_lib.Functions.Money = Ez_lib.Functions.Money or {}
 -- Supports ''qb-core', 'es_extended', edit if needed
 CreateThread(function()
     while GetResourceState(Config.Framework) ~= 'started' do
-        Wait(500)
+        Wait(50)
     end
     DebugPrint("Framework", Config.Framework)
     if Config.Framework == 'qb-core' then
