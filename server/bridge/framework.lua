@@ -309,6 +309,37 @@ local function get_jobs()
     return jobs
 end
 
+--- Create an item in the for server.
+--- @param name string Name of the item.
+--- @param data table Data of the item (label, weight, type, description, combinable, shouldClose, useable, unique).
+--- @usage Ez_lib.Functions.CreateItem('item_name', {label = 'Item Label', weight = 1, limit = 10})
+local function create_item(name, data)
+    DebugPrint('Creating Item', name)
+    if Config.Framework == 'qb-core' then
+        exports['qb-core']:AddItem(name, {
+            name = name,
+            label = data.label,
+            weight = data.weight or 100,
+            type = data.type or 'item',
+            image = data.image or name..'.png',
+            unique = data.unique or false,
+            useable = data.useable or false,
+            shouldClose = data.shouldClose or true,
+            combinable = data.combinable,
+            description = data.description or '',
+        })
+        DebugPrint('Creating Item', name)
+    elseif Config.Framework == 'es_extended' then
+        if not Framework.Items[name] then
+            DebugPrint('Creating Item', name)
+            Framework.Items[name] = { label = data.label, weight = data.weight, rare = data.rare or false, canRemove = data.can_remove or true }
+            Ez_lib.Functions.ExecuteSql("INSERT INTO items (name, label, weight, rare, can_remove) VALUES ('"..name.."', '"..data.label.."', "..data.weight..", "..data.rare or false..", "..data.can_remove or true..")")
+        end
+    else
+        -- Add more frameworks here
+    end
+end
+
 --- @Section Assign Functions
 Ez_lib.Functions.HasItem = has_item
 Ez_lib.Functions.GetPlayer = get_player
@@ -323,6 +354,7 @@ Ez_lib.Functions.GetIdentity = get_identity
 Ez_lib.Functions.SetPlayerJob = set_player_job
 Ez_lib.Functions.RegisterUsableItem = register_usable_item
 Ez_lib.Functions.GetJobs = get_jobs
+Ez_lib.Functions.CreateItem = create_item
 
 
 --- @section Callbacks
