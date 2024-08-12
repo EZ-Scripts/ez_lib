@@ -10,8 +10,8 @@ Ez_lib.Functions.Money = Ez_lib.Functions.Money or {}
 --- @section Initialization
 
 --- Initializes the connection to the specified framework when the resource starts.
--- Supports ''qb-core', 'es_extended', edit if needed
-CreateThread(function()
+-- Supports ''qb-core', 'es_extended', edit if needed.
+AddEventHandler('onResourceStart', function(resource) if GetCurrentResourceName() ~= resource then return end
     while GetResourceState(Config.Framework) ~= 'started' do
         Wait(50)
     end
@@ -24,7 +24,7 @@ CreateThread(function()
         -- Add more frameworks here
     end
 end)
-
+while Framework == nil do Wait(0) end
 
 --- @section Functions
 
@@ -314,7 +314,6 @@ end
 --- @param data table Data of the item (label, weight, type, description, combinable, shouldClose, useable, unique).
 --- @usage Ez_lib.Functions.CreateItem('item_name', {label = 'Item Label', weight = 1, limit = 10})
 local function create_item(name, data)
-    DebugPrint('Creating Item', name)
     if Config.Framework == 'qb-core' then
         exports['qb-core']:AddItem(name, {
             name = name,
