@@ -6,8 +6,8 @@ Config.Target = "ox_target" -- "none" or "ox_target" or "qb-target", etc
 Config.Inventory = "ox_inventory" -- "ox_inventory" or "new-qb-inventory" or "qb-inventory" or "qs-inventory" or "codem-inventory", etc
 Config.SQL = "oxmysql" -- "oxmysql" or "ghmattimysql" or "mysql-async", etc
 Config.Menu = { -- or other(Update the menu.lua file)
-	Menu = "qb", -- "ox" or "qb"
-	Input = "qb", -- "ox" or "qb"
+	Menu = "ox", -- "ox" or "qb"
+	Input = "ox", -- "ox" or "qb"
 } -- If you do not have Ox_lib, remove it from fxmanifest.lua
 
 --- Funtion to notify user
@@ -19,6 +19,7 @@ Config.TriggerNotify = function(title, message, type, src)
 	else TriggerClientEvent('okokNotify:Alert', src, title, message, 6000, type) end]]
 	if not src then	TriggerEvent("QBCore:Notify", message, type)
 	else TriggerClientEvent("QBCore:Notify", src, message, type) end
+	DebugPrint("Notify", message)
 end
 
 --- Function give vehicle keys

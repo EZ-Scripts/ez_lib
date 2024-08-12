@@ -240,24 +240,28 @@ local function get_identity(source)
             nationality = player.PlayerData.charinfo.nationality
         }
     elseif Config.Framework == 'es_extended' then
-        local identifier = get_player_unique_id(source)
-		local result = MySQL.Sync.fetchAll('SELECT * FROM `users` WHERE identifier = @identifier', {
-		['@identifier'] = identifier
-		})
-
-		if result[1]['firstname'] ~= nil then
-            player_data = {
-                firstname = result[1].firstname,
-                lastname = result[1].lastname,
-                dob = result[1]['dateofbirth'],
-                sex = result[1]['sex'],
-                nationality = 'LS, Los Santos'
-            }
-		end
+        local player = get_player(source)
+        local name = {}
+        for s in string.gmatch(player.name, "%S+") do
+            if #name + 1 == 1 then
+                name[1] = s
+            elseif name[2] == nil then
+                name[2] = s
+            else
+                name[2] = name[2] .. " " .. s
+            end
+        end
+        print(name[1])
+        player_data = {
+            firstname = name[1] or "",
+            lastname = name[2] or "",
+            dob = "01/01/1996",
+            sex = "other",
+            nationality = "LS, Los Santos"
+        }
     end
     if player_data == nil then
         return false
-
     end
     return player_data
 end
@@ -311,7 +315,8 @@ end
 
 --- Create an item in the for server.
 --- @param name string Name of the item.
---- @param data table Data of the item (label, weight, type, description, combinable, shouldClose, useable, unique).
+--- @param data table Data of the item (label, weight, type, description, combinable, shouldClose, useable, unique)
+--- @returns boolean when server restart is needed FOR ESX
 --- @usage Ez_lib.Functions.CreateItem('item_name', {label = 'Item Label', weight = 1, limit = 10})
 local function create_item(name, data)
     if Config.Framework == 'qb-core' then
@@ -329,14 +334,16 @@ local function create_item(name, data)
         })
         DebugPrint('Creating Item', name)
     elseif Config.Framework == 'es_extended' then
-        if not Framework.Items[name] then
-            DebugPrint('Creating Item', name)
-            Framework.Items[name] = { label = data.label, weight = data.weight, rare = data.rare or false, canRemove = data.can_remove or true }
-            Ez_lib.Functions.ExecuteSql("INSERT INTO items (name, label, weight, rare, can_remove) VALUES ('"..name.."', '"..data.label.."', "..data.weight..", "..data.rare or false..", "..data.can_remove or true..")")
+        local doesExist = Ez_lib.Functions.ExecuteSql("SELECT * FROM items WHERE name = '"..name.."'")
+        if doesExist[1] == nil then
+            DebugPrint('Creating Item (Server Restart Needed)', name)
+            Ez_lib.Functions.ExecuteSql("INSERT INTO items (name, label, weight, rare, can_remove) VALUES ('"..name.."', '"..data.label.."', "..data.weight..", "..'0'..", "..'1'..")")
+            return true
         end
     else
         -- Add more frameworks here
     end
+    return false
 end
 
 --- @Section Assign Functions

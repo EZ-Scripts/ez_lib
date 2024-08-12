@@ -32,7 +32,6 @@ end
 if Config.Inventory == "new-qb-inventory" then
     RegisterNetEvent("inventory:server:OpenInventory", function(type, name, stash)
         if type == "stash" then
-            print(stash)
             stash.label = name
             exports['qb-inventory']:OpenInventory(source, name, stash)
         elseif type == "shop" then

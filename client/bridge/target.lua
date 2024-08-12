@@ -21,7 +21,6 @@ InLocation = false
 function CreateTarget(data)
     DebugPrint("Creating Target", data.label.."^7' at ^6"..data.coords.."^7")
     local k = #Targets+1
-    print(k)
     local vector3_coords = vector3(data.coords.x, data.coords.y, data.coords.z)
     local heading = data.coords.w or 0.0
     local length = data.length or 1.5
@@ -49,7 +48,7 @@ function CreateTarget(data)
         end)
     elseif Config.Target == "ox_target" then
         Targets[k] =
-        {
+        exports.ox_target:addBoxZone({
             coords = vector3_coords,
             size = vector3(width, length, (data.maxZ or data.coords.z + 1 - (data.minZ or (data.coords.z - 1))) or 3.5),
             distance = 150.0,
@@ -69,8 +68,7 @@ function CreateTarget(data)
                     end
                 },
             },
-        }
-        exports.ox_target:addBoxZone(Targets[k])
+        })
     else
         Targets[k] =
         exports[Config.Target]:AddBoxZone("ez_lib_Target#"..k, vector3_coords, length, width,
