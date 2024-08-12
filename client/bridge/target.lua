@@ -22,12 +22,12 @@ function CreateTarget(data)
     DebugPrint("Creating Target", data.label.."^7' at ^6"..data.coords.."^7")
     local k = #Targets+1
     print(k)
-    local vector3 = vector3(data.coords.x, data.coords.y, data.coords.z)
+    local vector3_coords = vector3(data.coords.x, data.coords.y, data.coords.z)
     local heading = data.coords.w or 0.0
     local length = data.length or 1.5
     local width = data.width or 1.5
     if Config.Target == "none" or Config.Target == nil then
-        local Zone = BoxZone:Create(vector3, length, width, {name = "box_zone", debugPoly = Config.Debug, heading = heading, minZ = data.minZ or data.coords.z - 1, maxZ = data.maxZ or data.coords.z + 1})
+        local Zone = BoxZone:Create(vector3_coords, length, width, {name = "box_zone", debugPoly = Config.Debug, heading = heading, minZ = data.minZ or data.coords.z - 1, maxZ = data.maxZ or data.coords.z + 1})
         Targets[k] = ComboZone:Create({Zone}, {name = "ez_lib_Target#"..k, debugPoly = Config.Debug})
         Targets[k]:onPlayerInOut(function(isPointInside, _, _)
             if isPointInside then
@@ -50,8 +50,8 @@ function CreateTarget(data)
     elseif Config.Target == "ox_target" then
         Targets[k] =
         {
-            coords = vector3,
-            size = vector3(width, length, (data.maxZ - (data.minZ + 1)) or 3.5),
+            coords = vector3_coords,
+            size = vector3(width, length, (data.maxZ or data.coords.z + 1 - (data.minZ or (data.coords.z - 1))) or 3.5),
             distance = 150.0,
             rotation = heading,
             debug = Config.Debug,
@@ -73,7 +73,7 @@ function CreateTarget(data)
         exports.ox_target:addBoxZone(Targets[k])
     else
         Targets[k] =
-        exports[Config.Target]:AddBoxZone("ez_lib_Target#"..k, vector3, length, width,
+        exports[Config.Target]:AddBoxZone("ez_lib_Target#"..k, vector3_coords, length, width,
             {
                 name = "ez_lib_Target#"..k,
                 heading = heading,
