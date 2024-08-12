@@ -68,6 +68,29 @@ local function create_prop(model, coords, synced, frozen)
 	return prop
 end
 
+--- Function to create a Ped at a specific location
+--- @param model string The model of the ped
+--- @param coords table The coordinates to spawn the ped
+--- @param freeze boolean Whether to freeze the ped or not
+--- @param collision boolean Whether to enable collision or not
+--- @param scenario string The scenario to player
+--- @param anim table The animation to play (1 = dict, 2 = name)
+--- @return number ped The ped handle
+--- @usage Ez_lib.Functions.CreatePed("a_m_m_skater_01", vector4(0.0, 0.0, 0.0, 0.0), true, false, "WORLD_HUMAN_SMOKING", {"amb@world_human_smoking@male@male_a@enter", "enter"})
+local function create_ped(model, coords, freeze, collision, scenario, anim)
+	LoadModel(model)
+	local ped = CreatePed(4, GetHashKey(model), coords.x, coords.y, coords.z, coords.w, false, false)
+	SetEntityInvincible(ped, true)
+	FreezeEntityPosition(ped, freeze)
+	if collision then SetEntityNoCollisionEntity(ped, PlayerPedId(), false) end
+	if scenario then TaskStartScenarioInPlace(ped, scenario, 0, true) end
+	if anim then
+		LoadAnimDict(anim[1])
+		TaskPlayAnim(ped, anim[1], anim[2], 8.0, 8.0, -1, 0, 0, 0, 0, 0)
+	end
+	return ped
+end
+
 --- Function to spawn a vehicle at a specific location
 --- @param model string The model of the vehicle
 --- @param coords table The coordinates to spawn the vehicle
@@ -104,3 +127,4 @@ Ez_lib.Functions.MakeBlip = make_blip
 Ez_lib.Functions.Look = look
 Ez_lib.Functions.CreateProp = create_prop
 Ez_lib.Functions.SpawnVehicle = spawn_vehicle
+Ez_lib.Functions.CreatePed = create_ped

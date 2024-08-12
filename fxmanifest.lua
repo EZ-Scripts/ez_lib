@@ -4,7 +4,7 @@ lua54 'yes'
 
 name "ez_lib"
 version "1.0"
-description "Ns Script Library"
+description "[QB/ESX/Other] EZ Scripts Library"
 
 
 shared_scripts {'@ox_lib/init.lua', 'config.lua'} -- Remove ox_lib if you are not using it
