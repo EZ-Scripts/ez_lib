@@ -2,7 +2,8 @@ fx_version "cerulean"
 game "gta5"
 lua54 'yes'
 
-name "ez_lib"
+author 'Rayaan Uddin'
+name "ez_lib" -- Do not change this.
 version "1.0"
 description "[QB/ESX/Other] EZ Scripts Library"
 
