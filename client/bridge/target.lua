@@ -85,7 +85,7 @@ function CreateTarget(data)
                         type = data.type or "client",
                         canInteract = function(entity)
                             if data.canInteract == nil then return true end
-                            return data.canInteract(entity) or true
+                            return data.canInteract(entity)
                         end,
                         event = data.event,
                         action = function(entity)
