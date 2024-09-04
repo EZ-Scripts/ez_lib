@@ -82,8 +82,8 @@ local function get_player_items()
         for k, v in pairs(playerData.items) do
             if items[v.name] then
                 items[v.name].amount = items[v.name].amount + v.count
-            else
-                items[v.name] = { amount = v.amount, label = v.label, name = v.name, weight = Framework.Shared.Items[v.name].weight }
+            else     
+                items[v.name] = { amount = v.amount, label = v.label, name = v.name, weight = v.weight or 1 }
             end
         end
     elseif Config.Framework == 'es_extended' then
@@ -99,6 +99,8 @@ local function get_player_items()
     else
         -- Your custom code here
     end
+
+    DebugPrint("Getting player items", json.encode(items))
     return items
 end
 
