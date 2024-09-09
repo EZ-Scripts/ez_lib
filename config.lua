@@ -105,3 +105,7 @@ end
 Config.AddMoneyToSociety = function(society, amount)
 	exports['qb-management']:AddMoney(society, amount)
 end
+
+
+-- DO NOT TOUCH BELOW THIS LINE
+ResourceName = GetCurrentResourceName()

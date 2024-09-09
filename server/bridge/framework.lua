@@ -366,7 +366,7 @@ Ez_lib.Functions.CreateItem = create_item
 --- @section Callbacks
 
 --- Callback to check if a player has an item in their inventory.
-Ez_lib.Functions.CreateCallback('ez_lib:server:has_item', function(source, cb, data)
+Ez_lib.Functions.CreateCallback(ResourceName..":server:has_item", function(source, cb, data)
     local item_name = data.item
     local item_amount = data.amount or 1
     local player_has_item = false
@@ -374,10 +374,10 @@ Ez_lib.Functions.CreateCallback('ez_lib:server:has_item', function(source, cb, d
 end)
 
 --- @section Server Events
-RegisterNetEvent("ez_lib:server:RemoveItem", function(item, count)
+RegisterNetEvent(ResourceName..":server:RemoveItem", function(item, count)
     removeItem(source, item, count or 1)
 end)
-RegisterNetEvent("ez_lib:server:AddItem", function(item, count)
+RegisterNetEvent(ResourceName..":server:AddItem", function(item, count)
     if count>1 then temp = 'items' else temp = 'item' end
     if addItem(source, item, count or 1) then
         Config.TriggerNotify('Add Item', 'You have received ' .. count .. ' ' ..temp , 'success', source)

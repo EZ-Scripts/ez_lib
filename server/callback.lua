@@ -11,10 +11,10 @@ local function CreateCallback(name, func)
     Callbacks[name] = func
 end
 
-RegisterNetEvent("ez_lib:server:trigger_callback", function(name, cb_id, data)
+RegisterNetEvent(ResourceName..":server:trigger_callback", function(name, cb_id, data)
     if Callbacks[name] ~= nil then
         Callbacks[name](source, function(result)
-            TriggerClientEvent("ez_lib:client:callback_result", source, cb_id, result)
+            TriggerClientEvent(ResourceName..":client:callback_result", source, cb_id, result)
         end, data)
     else
         DebugPrint("Callback not found", name)

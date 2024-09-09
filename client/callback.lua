@@ -8,7 +8,7 @@ Ez_lib.Functions = Ez_lib.Functions or {}
 function TriggerCallback(name, data)
     local cb_id = math.random(1, 1000000)
     Ez_lib.Callbacks[cb_id] = -1
-    TriggerServerEvent('ez_lib:server:trigger_callback', name, cb_id, data)
+    TriggerServerEvent(ResourceName..":server:trigger_callback", name, cb_id, data)
 
     local res = Ez_lib.Callbacks[cb_id]
     while res ~= nil do
@@ -23,7 +23,7 @@ function TriggerCallback(name, data)
     return false
 end
 
-RegisterNetEvent("ez_lib:client:callback_result", function(cb_id, result)
+RegisterNetEvent(ResourceName..":client:callback_result", function(cb_id, result)
     if Ez_lib.Callbacks[cb_id] == -1 then
         Ez_lib.Callbacks[cb_id] = result
     else
