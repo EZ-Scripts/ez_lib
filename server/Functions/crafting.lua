@@ -13,5 +13,5 @@ RegisterNetEvent(ResourceName..":server:Crafting:MakeItem", function(craft)
 		end
 	end
 	Ez_lib.Functions.Inventory.Add(src, craft.item, craft.amount)
-	Ez_lib.Shared.TriggerNotify(nil, "Received ? item(s)", 'success', src)
+	Ez_lib.Shared.TriggerNotify(nil, "Received "..craft.amount.." item(s)", 'success', src)
 end)

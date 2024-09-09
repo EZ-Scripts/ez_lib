@@ -8,13 +8,13 @@ local function crafting(data)
 	local Menu = {}
 	local player_items = Ez_lib.Functions.GetPlayerItems()
 	for k, v in pairs(data.craftingTable.Items) do
-		local label = ""
-		local title = ""
+		local label, title, titletemp = "", "", ""
 		if data.Items[v.item] ~= nil then
 			title = data.Items[v.item].label
 		else
 			title = v.item
 		end
+        titletemp = title
 		if v.amount and v.amount > 1 then
 			title = title.." x"..v.amount
 		end
@@ -43,7 +43,7 @@ local function crafting(data)
 			title = title,
 			label = label,
 			event = ResourceName..":Crafting:MakeItem",
-			args = { craft = v, craftingTable = data.craftingTable, imageTemplate = data.imageTemplate, title = title},
+			args = { craft = v, craftingTable = data.craftingTable, imageTemplate = data.imageTemplate, title = titletemp},
 		}
 	end
 	Ez_lib.Functions.Menu(data.craftingTable.Menu.header, Menu)

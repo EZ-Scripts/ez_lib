@@ -1,6 +1,6 @@
 Config = {}
 
-Config.Debug = true -- Set to false to disable debug messages
+Config.Debug = false -- Set to false to disable debug messages
 Config.Framework = "qb-core" -- "qb-core" or "es_extended" or "other"
 Config.Target = "qb-target" -- "none" or "ox_target" or "qb-target", etc
 Config.Inventory = "new-qb-inventory" -- "ox_inventory" or "new-qb-inventory" or "qb-inventory" or "qs-inventory" or "codem-inventory", etc
@@ -105,7 +105,6 @@ end
 Config.AddMoneyToSociety = function(society, amount)
 	exports['qb-management']:AddMoney(society, amount)
 end
-
 
 -- DO NOT TOUCH BELOW THIS LINE
 ResourceName = GetCurrentResourceName()
