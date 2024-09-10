@@ -37,9 +37,9 @@ local function CheckVersion(resourceName)
 
             -- If the versions are different, print it out
             if ( tonumber(curVer) ~= tonumber(text) ) then
-                print( "^1This script is outdated, visit your keymaster to get the latest version." )
+                print( "^1"..resourceName.." script is outdated, visit your keymaster to get the latest version." )
             else
-                print( "^This script is up to date!\n^0" )
+                print( "^2"..resourceName.." script is up to date!\n^0" )
             end
         else
             -- In case the version can not be requested, print out an error message

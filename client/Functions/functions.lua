@@ -43,6 +43,15 @@ local function make_blip(data)
     return blip
 end
 
+--- Deletes a blip from the map
+--- @param blip integer The blip to delete
+--- @usage Ez_lib.Functions.DeleteBlip(blip)
+--- @return void
+--- @usage Ez_lib.Functions.DeleteBlip(blip)
+local function delete_blip(blip)
+	RemoveBlip(blip)
+end
+
 --- Function to make player look and move at a specific location
 ---@param coords vector The coordinates to look at
 ---@usage Ez_lib.Functions.Look(vector3(0.0, 0.0, 0.0))
@@ -124,6 +133,7 @@ end
 
 ---@section Assign Functions
 Ez_lib.Functions.MakeBlip = make_blip
+Ez_lib.Functions.DeleteBlip = delete_blip
 Ez_lib.Functions.Look = look
 Ez_lib.Functions.CreateProp = create_prop
 Ez_lib.Functions.SpawnVehicle = spawn_vehicle
