@@ -43,7 +43,7 @@ local function crafting(data)
 			title = title,
 			label = label,
 			event = ResourceName..":Crafting:MakeItem",
-			args = { craft = v, craftingTable = data.craftingTable, imageTemplate = data.imageTemplate, title = titletemp},
+			args = { craft = v, craftingTable = data.craftingTable, imageTemplate = data.imageTemplate, title = titletemp, Items = data.Items},
 		}
 	end
 	Ez_lib.Functions.Menu(data.craftingTable.Menu.header, Menu)
@@ -56,7 +56,7 @@ RegisterNetEvent(ResourceName..":Crafting:MakeItem", function(data)
 			return
 		end
 		TriggerServerEvent(ResourceName..":server:Crafting:MakeItem", data.craft)
-		Wait(500) -- Delay
+		Wait(1000)
 		crafting(data)
 	end, data.craft.item)
 end)
