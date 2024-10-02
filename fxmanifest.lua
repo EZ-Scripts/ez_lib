@@ -4,7 +4,7 @@ lua54 'yes'
 
 author 'Rayaan Uddin'
 name "ez_lib" -- Do not change this.
-version "1.1"
+version "1.2"
 description "[QB/ESX/Other] EZ Scripts Library"
 
 

@@ -56,10 +56,13 @@ local function has_item(source, item_name, item_amount)
     item_amount = item_amount or 1
     local has_item = false
     if Config.Framework == 'qb-core' then
-        local item = player.Functions.GetItemByName(item_name)
-        if item ~= nil and item.amount >= item_amount then
-            has_item =  true
+        local count = 0
+        for k, v in pairs(player.PlayerData.items) do
+            if v.name == item_name then
+                count = count + v.amount
+            end
         end
+        has_item = count >= item_amount and true or false
     elseif Config.Framework == 'es_extended' then
         local item = player.getInventoryItem(item_name)
         if item ~= nil and item.count >= item_amount then
