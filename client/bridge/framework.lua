@@ -81,7 +81,7 @@ local function get_player_items()
     if Config.Framework == 'qb-core' then
         for k, v in pairs(playerData.items) do
             if items[v.name] then
-                items[v.name].amount = items[v.name].amount + v.count
+                items[v.name].amount = items[v.name].amount + v.amount
             else     
                 items[v.name] = { amount = v.amount, label = v.label, name = v.name, weight = v.weight or 1 }
             end
