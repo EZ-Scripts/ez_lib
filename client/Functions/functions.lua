@@ -4,6 +4,9 @@
 Ez_lib = Ez_lib or {}
 Ez_lib.Functions = Ez_lib.Functions or {}
 
+--- Loads Animation Dictionary
+---@param dict string
+---@usage Ez_lib.Functions.LoadAnimDict("anim@heists@ornate_bank@grab_cash")
 function LoadAnimDict(dict)
 	DebugPrint("Loading animation dictionary", dict)
 	while not HasAnimDictLoaded(dict) do
@@ -12,6 +15,9 @@ function LoadAnimDict(dict)
 	end
 end
 
+--- Loads Model Stream
+---@param model string
+---@usage Ez_lib.Functions.LoadModel("hei_p_m_bag_var22_arm_s")
 function LoadModel(model)
 	local time = 0
 	DebugPrint("Loading model", model)
@@ -132,6 +138,8 @@ local function spawn_vehicle(model, coords, cb, isnetworked)
 end
 
 ---@section Assign Functions
+Ez_lib.Functions.LoadAnimDict = LoadAnimDict
+Ez_lib.Functions.LoadModel = LoadModel
 Ez_lib.Functions.MakeBlip = make_blip
 Ez_lib.Functions.DeleteBlip = delete_blip
 Ez_lib.Functions.Look = look
