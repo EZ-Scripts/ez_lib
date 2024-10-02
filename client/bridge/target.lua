@@ -47,8 +47,7 @@ function CreateTarget(data)
             end
         end)
     elseif Config.Target == "ox_target" then
-        Targets[k] =
-        exports.ox_target:addBoxZone({
+        Targets[k] = exports.ox_target:addBoxZone({
             coords = vector3_coords,
             size = vector3(width, length, (data.maxZ or data.coords.z + 1 - (data.minZ or (data.coords.z - 1))) or 3.5),
             distance = 150.0,
@@ -70,7 +69,6 @@ function CreateTarget(data)
             },
         })
     else
-        Targets[k] =
         exports[Config.Target]:AddBoxZone("ez_lib_Target#"..k, vector3_coords, length, width,
             {
                 name = "ez_lib_Target#"..k,
@@ -98,6 +96,7 @@ function CreateTarget(data)
                 distance = data.distance or 2.5,
             }
         )
+        Targets[k] = "ez_lib_Target#"..k
     end
     return Targets[k]
 end
