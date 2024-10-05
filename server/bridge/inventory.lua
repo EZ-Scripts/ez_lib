@@ -30,12 +30,14 @@ local function register_shop(name, shop)
 end
 
 if Config.Inventory == "new-qb-inventory" then
-    RegisterNetEvent("inventory:server:OpenInventory", function(type, name, stash)
+    RegisterNetEvent("inventory:server:OpenInventory", function(type, name, other)
         if type == "stash" then
-            stash.label = name
-            exports['qb-inventory']:OpenInventory(source, name, stash)
+            other.label = name
+            exports['qb-inventory']:OpenInventory(source, name, other)
         elseif type == "shop" then
             exports['qb-inventory']:OpenShop(source, name)
+        else
+            exports['qb-inventory']:OpenInventory(source, name, other)
         end
     end)
 end
