@@ -96,6 +96,28 @@ Config.ProgressBar = function(name, label, duration, useWhileDead, canCancel, co
 	end, icon)
 end
 
+RemoveStress = function(stress) -- Your remove stress event/export (Client) [Optional]
+	TriggerServerEvent("hud:server:RelieveStress", stress)
+end
+
+RelieveThirst = function(n) -- Removes n amount of thirst (Client)
+	-- ESX
+	--TriggerClientEvent("esx_status:add", source, "thirst", n * 10000)
+
+	local QBCore = exports["qb-core"]:GetCoreObject()
+	-- QBCore
+	TriggerServerEvent("consumables:server:addThirst", QBCore.Functions.GetPlayerData().metadata.thirst + n)
+end
+
+RelieveHunger = function(n) -- Removes n amount of hunger (Client)
+	-- ESX
+	--TriggerClientEvent("esx_status:add", source, "hunger", n * 10000)
+
+	local QBCore = exports["qb-core"]:GetCoreObject()
+	-- QBCore
+	TriggerServerEvent("consumables:server:addHunger", QBCore.Functions.GetPlayerData().metadata.hunger + n)
+end
+
 --- Server Side Functions
 
 --- Add Money to Society

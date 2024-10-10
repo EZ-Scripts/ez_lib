@@ -146,3 +146,69 @@ Ez_lib.Functions.Look = look
 Ez_lib.Functions.CreateProp = create_prop
 Ez_lib.Functions.SpawnVehicle = spawn_vehicle
 Ez_lib.Functions.CreatePed = create_ped
+
+---@section Client Events
+
+--- Event to use consumable items
+--- @param item string The item to use
+--- @param data table The item to use data
+--- @usage TriggerEvent(ResourceName..":UseConsumable", "item")
+RegisterNetEvent(ResourceName..":UseConsumable", function(item, data)
+	if data.RequiredItems then
+		local player_items = Ez_lib.Functions.GetPlayerItems()
+		for k, v in pairs(data.RequiredItems) do
+			if not (player_items[k] and player_items[k].amount >= v) then
+				Ez_lib.Shared.TriggerNotify(nil, "Missing required item: "..k, "error")
+				return
+			end
+		end
+	end
+	if data.Progress then
+		if data.Progress.animationInCar and IsPedInAnyVehicle(PlayerPedId(), true) == 1 then
+			data.Progress.animation = data.Progress.animationInCar
+		end
+		Ez_lib.Shared.ProgressBar(item, data.Progress.label or "Eating..", (data.Progress.time * 1000) or 5500, data.Progress.useWhileDead or false, data.Cancelled or data.canCancel or false, {
+			disableMovement = data.Progress.disableMovement or false,
+			disableMouse = data.Progress.disableMouse or false,
+			disableCombat = data.Progress.disableCombat or false,
+		}, {}, {}, {}, function(success) -- Done
+			if not success then
+				if data.Cancelled then
+					data.Cancelled()
+				end
+				return
+			end
+			if data.RemoveItem then
+				TriggerServerEvent("ez_lib:server:RemoveItem", item)
+			end
+			if data.Success then
+				data.Success()
+			end
+			if data.Armour then AddArmourToPed(data, data.Armour) end
+			if data.Stress then Config.RemoveStress(data.Stress) end
+			if data.Thirst then Config.RelieveThirst(data.Thirst) end
+			if data.Hunger then Config.RelieveHunger(data.Hunger) end
+		end, item)
+		if data.Progress.animation then
+			Ez_lib.Functions.Emote.OnEmotePlay({
+				data.Progress.animation.animDict,
+				data.Progress.animation.anim,
+				"Ez_lib:useConsumable",
+				AnimationOptions = data.Progress.animation.animationOptions or {}
+			})
+		end
+		Wait((data.Progress.time * 1000) or 5500)
+		Ez_lib.Functions.Emote.DestroyAllProps()
+	else
+		if data.RemoveItem then
+			TriggerServerEvent("ez_lib:server:RemoveItem", item)
+		end
+		if data.Success then
+			data.Success()
+		end
+		if data.Armour then AddArmourToPed(data, data.Armour) end
+		if data.Stress then Config.RemoveStress(data.Stress) end
+		if data.Thirst then Config.RelieveThirst(data.Thirst) end
+		if data.Hunger then Config.RelieveHunger(data.Hunger) end
+	end
+end)

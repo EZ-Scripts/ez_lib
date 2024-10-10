@@ -15,6 +15,18 @@ local function get_players()
     return players
 end
 
+--- Function which registers a consumable item
+--- This function is used to register a consumable item
+--- @param item string The item to register
+--- @param data table The data to send
+--- @usage Ez_lib.Functions.RegisterConsumableItem("water", {thirst = 50})
+local function register_consumable_item(item, data)
+    Ez_lib.Functions.RegisterUsableItem(item, function(source, iData)
+        local src = source
+        TriggerClientEvent(ResourceName..":UseConsumable", src, item, data)
+    end)
+end
+
 --- Function to execute sql queries
 --- This function is used to execute sql queries
 ---@param query string The query to execute
@@ -83,3 +95,4 @@ end
 Ez_lib.Functions.GetPlayers = get_players
 Ez_lib.Functions.ExecuteSql = execute_sql
 Ez_lib.Functions.SendToDiscord = send_to_discord
+Ez_lib.Functions.RegisterConsumableItem = register_consumable_item
