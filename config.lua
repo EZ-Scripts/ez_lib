@@ -96,11 +96,11 @@ Config.ProgressBar = function(name, label, duration, useWhileDead, canCancel, co
 	end, icon)
 end
 
-RemoveStress = function(stress) -- Your remove stress event/export (Client) [Optional]
+Config.RemoveStress = function(stress) -- Your remove stress event/export (Client) [Optional]
 	TriggerServerEvent("hud:server:RelieveStress", stress)
 end
 
-RelieveThirst = function(n) -- Removes n amount of thirst (Client)
+Config.RelieveThirst = function(n) -- Removes n amount of thirst (Client)
 	-- ESX
 	--TriggerClientEvent("esx_status:add", source, "thirst", n * 10000)
 
@@ -109,7 +109,7 @@ RelieveThirst = function(n) -- Removes n amount of thirst (Client)
 	TriggerServerEvent("consumables:server:addThirst", QBCore.Functions.GetPlayerData().metadata.thirst + n)
 end
 
-RelieveHunger = function(n) -- Removes n amount of hunger (Client)
+Config.RelieveHunger = function(n) -- Removes n amount of hunger (Client)
 	-- ESX
 	--TriggerClientEvent("esx_status:add", source, "hunger", n * 10000)
 

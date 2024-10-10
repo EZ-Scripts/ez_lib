@@ -3,6 +3,7 @@
 
 Ez_lib = Ez_lib or {}
 Ez_lib.Functions = Ez_lib.Functions or {}
+local consumables = {}
 
 --- Loads Animation Dictionary
 ---@param dict string
@@ -153,7 +154,9 @@ Ez_lib.Functions.CreatePed = create_ped
 --- @param item string The item to use
 --- @param data table The item to use data
 --- @usage TriggerEvent(ResourceName..":UseConsumable", "item")
-RegisterNetEvent(ResourceName..":UseConsumable", function(item, data)
+RegisterNetEvent(ResourceName..":UseConsumable", function(item)
+	if not consumables[item] then return end
+	local data = consumables[item]
 	if data.RequiredItems then
 		local player_items = Ez_lib.Functions.GetPlayerItems()
 		for k, v in pairs(data.RequiredItems) do
@@ -184,17 +187,17 @@ RegisterNetEvent(ResourceName..":UseConsumable", function(item, data)
 			if data.Success then
 				data.Success()
 			end
-			if data.Armour then AddArmourToPed(data, data.Armour) end
-			if data.Stress then Config.RemoveStress(data.Stress) end
-			if data.Thirst then Config.RelieveThirst(data.Thirst) end
-			if data.Hunger then Config.RelieveHunger(data.Hunger) end
+			if data.Armour then AddArmourToPed(PlayerPedId(), tonumber(data.Armour)) end
+			if data.Stress then Config.RemoveStress(tonumber(data.Stress)) end
+			if data.Thirst then Config.RelieveThirst(tonumber(data.Thirst)) end
+			if data.Hunger then Config.RelieveHunger(tonumber(data.Hunger)) end
 		end, item)
 		if data.Progress.animation then
 			Ez_lib.Functions.Emote.OnEmotePlay({
 				data.Progress.animation.animDict,
 				data.Progress.animation.anim,
 				"Ez_lib:useConsumable",
-				AnimationOptions = data.Progress.animation.animationOptions or {}
+				AnimationOptions = data.Progress.animationOptions or {}
 			})
 		end
 		Wait((data.Progress.time * 1000) or 5500)
@@ -206,9 +209,16 @@ RegisterNetEvent(ResourceName..":UseConsumable", function(item, data)
 		if data.Success then
 			data.Success()
 		end
-		if data.Armour then AddArmourToPed(data, data.Armour) end
-		if data.Stress then Config.RemoveStress(data.Stress) end
-		if data.Thirst then Config.RelieveThirst(data.Thirst) end
-		if data.Hunger then Config.RelieveHunger(data.Hunger) end
+		if data.Armour then AddArmourToPed(PlayerPedId(), tonumber(data.Armour)) end
+		if data.Stress then Config.RemoveStress(tonumber(data.Stress)) end
+		if data.Thirst then Config.RelieveThirst(tonumber(data.Thirst)) end
+		if data.Hunger then Config.RelieveHunger(tonumber(data.Hunger)) end
+	end
+end)
+
+RegisterNetEvent(ResourceName..":AddConsumables", function(data)
+	-- Append all data to Consumables
+	for k, v in pairs(data) do
+		consumables[k] = v
 	end
 end)

@@ -19,11 +19,11 @@ end
 --- This function is used to register a consumable item
 --- @param item string The item to register
 --- @param data table The data to send
---- @usage Ez_lib.Functions.RegisterConsumableItem("water", {thirst = 50})
-local function register_consumable_item(item, data)
+--- @usage Ez_lib.Functions.RegisterConsumableItem("water")
+local function register_consumable_item(item)
     Ez_lib.Functions.RegisterUsableItem(item, function(source, iData)
         local src = source
-        TriggerClientEvent(ResourceName..":UseConsumable", src, item, data)
+        TriggerClientEvent(ResourceName..":UseConsumable", src, item)
     end)
 end
 
