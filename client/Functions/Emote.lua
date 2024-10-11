@@ -37,6 +37,7 @@ local function DestroyAllProps()
       DeleteEntity(v)
     end
     PlayerHasProp = false
+	ClearPedTasks(PlayerPedId())
 end
 
 local function OnEmotePlay(EmoteName)
