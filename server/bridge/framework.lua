@@ -119,28 +119,35 @@ end
 local function adjust_balance(source, action, type, amount)
     local player = get_player(source)
     if not player then return false end
-
+    DebugPrint('Adjusting Player Balance', type.." | $"..amount.." | "..action)
     if Config.Framework == 'qb-core' then
         if action == 'add' then
             player.Functions.AddMoney(type, amount)
+            return true
         elseif action == 'remove' then
             player.Functions.RemoveMoney(type, amount)
+            return true
         end
     elseif Config.Framework == 'es_extended' then
         if type == 'cash' then
             if action == 'add' then
                 player.addMoney(amount)
+                return true
             elseif action == 'remove' then
                 player.removeMoney(amount)
+                return true
             end
         else
             if action == 'add' then
                 player.addAccountMoney(type, amount)
+                return true
             elseif action == 'remove' then
                 player.removeAccountMoney(type, amount)
+                return true
             end
         end
     end
+    return false
 end
 local function addMoney(source, type, amount)
     adjust_balance(source, 'add', type, amount)
