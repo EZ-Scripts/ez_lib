@@ -57,9 +57,11 @@ local function has_item(source, item_name, item_amount)
     local has_item = false
     if Config.Framework == 'qb-core' then
         local count = 0
+        local countingName = "amount"
+        if Config.Inventory == "ox_inventory" then countingName = "count" end
         for k, v in pairs(player.PlayerData.items) do
             if v.name == item_name then
-                count = count + v.amount
+                count = count + v[countingName]
             end
         end
         has_item = count >= item_amount and true or false
