@@ -79,11 +79,13 @@ local function get_player_items()
     local items = {}
 
     if Config.Framework == 'qb-core' then
+        local countingName = "amount"
+        if Config.Inventory == "ox_inventory" then countingName = "count" end
         for k, v in pairs(playerData.items) do
             if items[v.name] then
-                items[v.name].amount = items[v.name].amount + v.amount
+                items[v.name].amount = items[v.name].amount + v[countingName]
             else     
-                items[v.name] = { amount = v.amount, label = v.label, name = v.name, weight = v.weight or 1 }
+                items[v.name] = { amount = v[countingName], label = v.label, name = v.name, weight = v.weight or 1 }
             end
         end
     elseif Config.Framework == 'es_extended' then
