@@ -102,6 +102,8 @@ local function adjust_inventory(source, action, item, count, item_data)
         elseif action == 'remove' then
             return player.removeInventoryItem(item, count)
         end
+    else
+        -- Add more frameworks here
     end
 end
 local function addItem(source, item, count, item_data)
@@ -148,6 +150,8 @@ local function adjust_balance(source, action, type, amount)
                 return true
             end
         end
+    else
+        -- Add more frameworks here
     end
     return false
 end
@@ -177,8 +181,9 @@ local function get_money(source, type)
             return player.getAccount(type).money
         end
     else
-        return -1
+        -- Add more frameworks here
     end
+    return -1
 end
 
 --- Get the job of a player by their source identifier.
@@ -199,7 +204,8 @@ local function get_player_job(source)
             player_job.onduty = player.getJob().onduty
             player_job.label = player.getJob().label
             player_job.grade = {number = player.getJob().grade, label = player.getJob().grade_label}
-
+        else
+            -- Add more frameworks here
         end
     end
     return player_job
@@ -217,6 +223,8 @@ local function set_player_job(source, job, grade)
         player.Functions.SetJob(job, grade)
     elseif Config.Framework == 'es_extended' then
         player.setJob(job, grade)
+    else
+        -- Add more frameworks here
     end
 end
 
@@ -232,6 +240,8 @@ local function get_player_unique_id(source)
         player_id = player.PlayerData.citizenid
     elseif Config.Framework == 'es_extended' then
         player_id = player.getIdentifier()
+    else
+        -- Add more frameworks here
     end
     return player_id
 end
@@ -271,6 +281,8 @@ local function get_identity(source)
             sex = "other",
             nationality = "LS, Los Santos"
         }
+    else
+        -- Add more frameworks here
     end
     if player_data == nil then
         return false
@@ -288,6 +300,8 @@ local function register_usable_item(name, func)
         Framework.Functions.CreateUseableItem(name, func)
     elseif Config.Framework == 'es_extended' then
         Framework.RegisterUsableItem(name, func)
+    else
+        -- Add more frameworks here
     end
 end
 
