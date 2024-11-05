@@ -17,6 +17,8 @@ CreateThread(function()
         Framework = exports['qb-core']:GetCoreObject()
     elseif Config.Framework == 'es_extended' then
         Framework = exports['es_extended']:getSharedObject()
+    else
+        -- Your custom code here
     end
 end)
 
@@ -46,6 +48,8 @@ local function get_player_data()
         player = Framework.Functions.GetPlayerData()
     elseif Config.Framework == 'es_extended' then
         player = Framework.GetPlayerData()
+    else
+        -- Your custom code here
     end
     return player
 end
@@ -67,6 +71,8 @@ local function get_players()
         players = Framework.Functions.GetPlayers()
     elseif Config.Framework == 'es_extended' then
         players = Framework.Game.GetPlayers()
+    else
+        -- Your custom code here
     end
     return players
 end
