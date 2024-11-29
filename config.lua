@@ -94,6 +94,37 @@ Config.ProgressBar = function(name, label, duration, useWhileDead, canCancel, co
 		local success = not cancelled -- Get if successfull then pass it through to function
 		cb(success)
 	end, icon)
+	--[[
+	exports['mythic_progbar']:Progress({
+		name = name,
+		duration = duration or 5000,
+		label = label,
+		useWhileDead = useWhileDead or false,
+		canCancel = canCancel or false,
+		animation = animation or nil,
+		controlDisables = controlDisables or {
+			disableMovement = true,
+			disableCarMovement = true,
+			disableMouse = false,
+			disableCombat = true,
+		},
+	}, function(cancelled)
+		local success = not cancelled -- Get if successfull then pass it through to function
+		cb(success)
+	end, icon)
+
+	exports["esx_progressbar"]:Progressbar(name, duration or 5000,{
+        	FreezePlayer = controlDisables.disableMovement or true,
+	    	animation ={
+                	type = "anim",
+                	dict = animation.animDict, 
+                	lib =animation.anim
+            	},
+            	onFinish = function()
+        		cb(true)
+    		end
+	})
+	]]
 end
 
 Config.RemoveStress = function(stress) -- Your remove stress event/export (Client) [Optional]
