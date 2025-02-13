@@ -345,7 +345,7 @@ end
 --- @returns boolean when server restart is needed FOR ESX
 --- @usage Ez_lib.Functions.CreateItem('item_name', {label = 'Item Label', weight = 1, limit = 10})
 local function create_item(name, data)
-    if Config.Framework == 'qb-core' then
+    if Config.Framework == 'qb-core' and not Config.Qbox then
         exports['qb-core']:AddItem(name, {
             name = name,
             label = data.label,
