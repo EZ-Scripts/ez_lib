@@ -95,7 +95,7 @@ local function get_player_items()
             end
         end
     elseif Config.Framework == 'es_extended' then
-        for k,v in ipairs(playerData.inventory) do
+        for k,v in pairs(playerData.inventory) do
             if v.count > 0 then
                 if items[v.name] then
                     items[v.name].amount = items[v.name].amount + v.count
