@@ -96,6 +96,20 @@ Config.ProgressBar = function(name, label, duration, useWhileDead, canCancel, co
 		cb(success)
 	end, icon)
 	--[[
+	if lib.progressBar({
+	    duration = duration or 5000,
+	    label = label or 'Drinking water',
+	    useWhileDead = useWhileDead or false,
+	    canCancel = canCancel or false,
+	    disable = {
+	        car = true,
+	    },
+	    anim = {
+	        dict = animation.animDict,
+	        clip = animation.anim
+	    },
+	}) then cb(true) else cb(false) end
+	
 	exports['mythic_progbar']:Progress({
 		name = name,
 		duration = duration or 5000,
