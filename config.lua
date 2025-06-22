@@ -61,6 +61,7 @@ end
 --- @param fuel integer The fuel to set
 --- @usage Config.SetFuel(100)
 Config.SetFuel = function(veh, fuel)
+	-- Entity(veh).state.fuel = fuel -- For ox_fuel
 	exports["LegacyFuel"]:SetFuel(veh, fuel)
 end
 
