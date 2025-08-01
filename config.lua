@@ -68,7 +68,7 @@ end
 --- Progress bar function (Client Side Only)
 --- @param name string The name of the progress bar
 --- @param label string The label of the progress bar
---- @param duration integer The duration of the progress bar
+--- @param duration integer The duration, in ms, of the progress bar
 --- @param useWhileDead boolean The progress bar can be used while dead
 --- @param canCancel boolean The progress bar can be cancelled
 --- @param controlDisables table The controls to disable {disableMovement, disableCarMovement, disableMouse, disableCombat}
