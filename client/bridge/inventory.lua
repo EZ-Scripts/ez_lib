@@ -8,7 +8,7 @@ Ez_lib.Functions.Inventory = Ez_lib.Functions.Inventory or {}
 --- @usage Ez_lib.Functions.Inventory.OpenStash("stash", {maxweight = 10000, slots = 10})
 local function open_stash(name, stash)
     if Config.Inventory == "ox_inventory" then
-        exports.ox_inventory:openInventory('stash', name)
+        exports[ResourceNames["ox_inventory"]]:openInventory('stash', name)
     else
         TriggerEvent("inventory:client:SetCurrentStash", name)
         TriggerServerEvent('inventory:server:OpenInventory', 'stash', name,  stash)
@@ -21,7 +21,7 @@ end
 --- @usage Config.OpenShop("shop", {label = "Shop", slots = 10, items = {{name = "item", price = 100, info = {}, type = "item", amount = 1, slot = 1}}})
 local function open_shop(name, shop)
     if Config.Inventory == "ox_inventory" then
-        exports.ox_inventory:openInventory('shop', { type = name })
+        exports[ResourceNames["ox_inventory"]]:openInventory('shop', { type = name })
     else
         if not (shop == nil) then if shop.slots == nil then shop.slots = #shop.items end end
         TriggerServerEvent("inventory:server:OpenInventory", "shop", name, shop)

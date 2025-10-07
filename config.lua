@@ -1,25 +1,46 @@
-Config = {}
+ResourceNames = {
+	["qb-core"] = "qb-core",
+	["es_extended"] = "es_extended",
+	["qbx_core"] = "qbx_core",
+	["ox_lib"] = "ox_lib",
+	["qb-menu"] = "qb-menu",
+	["oxmysql"] = "oxmysql",
+	["ghmattimysql"] = "ghmattimysql",
+	["mysql-async"] = "mysql-async",
+	["ox_inventory"] = "ox_inventory",
+	["qb-inventory"] = "qb-inventory",
+	["qb-target"] = "qb-target",
+	["ox_target"] = "ox_target",
+}
 
+Config = {}
 Config.Debug = false -- Set to false to disable debug messages
-Config.Framework = "qb-core" -- "qb-core" or "es_extended" or "other"
-Config.Qbox = false -- If you use "qbx-core", make sure to set the top framework at "qb-core"
-Config.Target = "qb-target" -- "none" or "ox_target" or "qb-target", etc
-Config.Inventory = "new-qb-inventory" -- "ox_inventory" or "new-qb-inventory" or "qb-inventory" or "qs-inventory" or "codem-inventory", etc
-Config.SQL = "oxmysql" -- "oxmysql" or "ghmattimysql" or "mysql-async", etc
+
+Config.Framework = "auto" -- "qb-core" or "es_extended" or "auto" or "other"
+Config.Target = "auto" -- "none" or "ox_target" or "qb-target" or "auto"
+Config.Inventory = "auto" -- "ox_inventory" or "qb-inventory" or "other"(like qs-inventory, ...) or "auto"
+Config.SQL = "auto" -- "oxmysql" or "ghmattimysql" or "mysql-async" or "auto"
 Config.Menu = { -- or other(Update the menu.lua file)
-	Menu = "qb", -- "ox" or "qb"
-	Input = "qb", -- "ox" or "qb"
+	Menu = "auto", -- "ox" or "qb" or "auto"
+	Input = "auto", -- "ox" or "qb" or "auto"
 } -- If you do not have Ox_lib, remove it from fxmanifest.lua
 
 --- Funtion to notify user
----@param: message: The message you want to send to user
----@param: type: The type of notification you want to send to user
----@param: src: The source of the player you want to send notification to
+---@param message string The message you want to send to user
+---@param type string The type of notification you want to send to user
+---@param src integer The source of the player you want to send notification to
 Config.TriggerNotify = function(title, message, type, src)
     --[[if not src then	exports['okokNotify']:Alert(title, message, 6000, type)
 	else TriggerClientEvent('okokNotify:Alert', src, title, message, 6000, type) end]]
-	if not src then	TriggerEvent("QBCore:Notify", message, type)
-	else TriggerClientEvent("QBCore:Notify", src, message, type) end
+	if not src then
+		TriggerEvent("QBCore:Notify", message, type)
+		TriggerEvent("ESX:Notify", type, 6000, message)
+		--TriggerEvent('okokNotify:Alert', title, message, 6000, type)
+	else
+		TriggerClientEvent("QBCore:Notify", src, message, type)
+		TriggerClientEvent("ESX:Notify", src, type, 6000, message)
+		--TriggerClientEvent('okokNotify:Alert', src, title, message, 6000, type)
+	end
 	DebugPrint("Notify", message)
 end
 
@@ -48,12 +69,14 @@ Config.DebugPrint = DebugPrint
 --- Function to show UI to open stash in its zone
 --- @param label string The label to show
 Config.ShowUI = function(label)
-    exports['qb-core']:DrawText("<b>[E] "..label.."</b>", 'left')
+	lib.showTextUI("[E] "..label, { position = "left-center" })
+    --exports['qb-core']:DrawText("<b>[E] "..label.."</b>", 'left')
 end
 
 --- Function to hide UI to open stash in its zone
 Config.HideUI = function()
-    exports['qb-core']:HideText()
+	lib.hideTextUI()
+    --exports['qb-core']:HideText()
 end
 
 --- Set Fuel Function
@@ -77,7 +100,21 @@ end
 --- @param prop2 table The prop to show {prop, bone, x, y, z, xR, yR, zR}
 --- @param cb function The callback function
 Config.ProgressBar = function(name, label, duration, useWhileDead, canCancel, controlDisables, animation, prop, prop2, cb, icon)
-	exports['progressbar']:Progress({
+	if lib.progressBar({
+	    duration = duration or 5000,
+	    label = label or 'Drinking water',
+	    useWhileDead = useWhileDead or false,
+	    canCancel = canCancel or false,
+	    disable = {
+	        car = true,
+	    },
+	    anim = {
+	        dict = animation.animDict,
+	        clip = animation.anim
+	    },
+	}) then cb(true) else cb(false) end
+
+	--[[exports['progressbar']:Progress({
 		name = name,
 		duration = duration or 5000,
 		label = label,
@@ -96,21 +133,7 @@ Config.ProgressBar = function(name, label, duration, useWhileDead, canCancel, co
 		local success = not cancelled -- Get if successfull then pass it through to function
 		cb(success)
 	end, icon)
-	--[[
-	if lib.progressBar({
-	    duration = duration or 5000,
-	    label = label or 'Drinking water',
-	    useWhileDead = useWhileDead or false,
-	    canCancel = canCancel or false,
-	    disable = {
-	        car = true,
-	    },
-	    anim = {
-	        dict = animation.animDict,
-	        clip = animation.anim
-	    },
-	}) then cb(true) else cb(false) end
-	
+
 	exports['mythic_progbar']:Progress({
 		name = name,
 		duration = duration or 5000,
@@ -151,18 +174,16 @@ Config.RelieveThirst = function(n) -- Removes n amount of thirst (Client)
 	-- ESX
 	--TriggerClientEvent("esx_status:add", source, "thirst", n * 10000)
 
-	local QBCore = exports["qb-core"]:GetCoreObject()
 	-- QBCore
-	TriggerServerEvent("consumables:server:addThirst", QBCore.Functions.GetPlayerData().metadata.thirst + n)
+	TriggerServerEvent("consumables:server:addThirst", Ez_lib.Functions.GetPlayerData().metadata.thirst + n)
 end
 
 Config.RelieveHunger = function(n) -- Removes n amount of hunger (Client)
 	-- ESX
 	--TriggerClientEvent("esx_status:add", source, "hunger", n * 10000)
 
-	local QBCore = exports["qb-core"]:GetCoreObject()
 	-- QBCore
-	TriggerServerEvent("consumables:server:addHunger", QBCore.Functions.GetPlayerData().metadata.hunger + n)
+	TriggerServerEvent("consumables:server:addHunger", Ez_lib.Functions.GetPlayerData().metadata.hunger + n)
 end
 
 --- Server Side Functions
@@ -175,5 +196,83 @@ Config.AddMoneyToSociety = function(society, amount)
 	exports['qb-management']:AddMoney(society, amount)
 end
 
--- DO NOT TOUCH BELOW THIS LINE
+------------------------------- DO NOT TOUCH BELOW THIS LINE -------------------------------
 ResourceName = GetCurrentResourceName()
+
+CreateThread(function()
+	while Config.Menu.Menu == "auto" or Config.Menu.Menu == nil do
+		print("Detecting menu...")
+		if GetResourceState(ResourceNames["ox_lib"]) == "started" then
+			Config.Menu.Menu = "ox"
+			break
+		elseif GetResourceState(ResourceNames["qb-menu"]) == "started" then
+			Config.Menu.Menu = "qb"
+			break
+		end
+		Wait(1000)
+	end
+
+	while Config.Menu.Input == "auto" or Config.Menu.Input == nil do
+		print("Detecting input...")
+		if GetResourceState(ResourceNames["ox_lib"]) == "started" then
+			Config.Menu.Input = "ox"
+			break
+		elseif GetResourceState(ResourceNames["qb-input"]) == "started" then
+			Config.Menu.Input = "qb"
+			break
+		end
+		Wait(1000)
+	end
+	if Config.Framework == "qbx_core" then
+		Config.Framework = "qb-core"
+		Config.Qbox = true
+	end
+	while Config.Framework == "auto" or Config.Framework == nil do
+		print("Detecting framework...")
+		if GetResourceState(ResourceNames["es_extended"]) == "started" then
+			Config.Framework = "es_extended"
+			break
+		elseif GetResourceState(ResourceNames["qb-core"]) == "started" or GetResourceState(ResourceNames["qbx_core"]) == "started" then
+			Config.Framework = "qb-core"
+			break
+		end
+		Wait(1000)
+	end
+	print("Framework: "..Config.Framework)
+	if GetResourceState(ResourceNames["qbx_core"]) == "started" then Config.Qbox = true end
+	while Config.SQL == "auto" or Config.SQL == nil do
+		print("Detecting SQL...")
+		if GetResourceState(ResourceNames["oxmysql"]) == "started" then
+			Config.SQL = "oxmysql"
+			break
+		elseif GetResourceState(ResourceNames["ghmattimysql"]) == "started" then
+			Config.SQL = "ghmattimysql"
+			break
+		elseif GetResourceState(ResourceNames["mysql-async"]) == "started" then
+			Config.SQL = "mysql-async"
+			break
+		end
+		Wait(1000)
+	end
+	if Config.Target == "auto" or Config.Target == nil then
+		print("Detecting target...")
+		if GetResourceState(ResourceNames["ox_target"]) == "started" then
+			Config.Target = "ox_target"
+		elseif GetResourceState(ResourceNames["qb-target"]) == "started" then
+			Config.Target = "qb-target"
+		else
+			Config.Target = "none"
+		end
+	end
+
+	if Config.Inventory == "auto" or Config.Inventory == nil then
+		print("Detecting inventory...")
+		if GetResourceState(ResourceNames["ox_inventory"]) == "started" then
+			Config.Inventory = "ox_inventory"
+		elseif GetResourceState(ResourceNames["qb-inventory"]) == "started" then
+			Config.Inventory = "qb-inventory"
+		else
+			Config.Inventory = "other"
+		end
+	end
+end)

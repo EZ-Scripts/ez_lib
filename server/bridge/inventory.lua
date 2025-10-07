@@ -8,7 +8,7 @@ Ez_lib.Functions.Inventory = Ez_lib.Functions.Inventory or {}
 --- @usage Ez_lib.Functions.Inventory.RegisterStash("stash", {slots = 10, maxweight = 10000})
 local function register_stash(name, stash)
     if Config.Inventory == "ox_inventory" then
-        exports.ox_inventory:RegisterStash(name, name, stash.slots or 50, stash.maxweight or 4000000)
+        exports[ResourceNames["ox_inventory"]]:RegisterStash(name, name, stash.slots or 50, stash.maxweight or 4000000)
     end
 end
 
@@ -18,9 +18,9 @@ end
 --- @usage Config.RegisterShop("shop", {label = "Shop", slots = 10, items = {name = "item", price = 100, info = {}, type = "item", amount = 1, slot = 1}})
 local function register_shop(name, shop)
     if Config.Inventory == "ox_inventory" then
-        exports.ox_inventory:RegisterShop(name, { name = shop.label, inventory = shop.items })
-    elseif Config.Inventory == "new-qb-inventory" then
-        exports['qb-inventory']:CreateShop({
+        exports[ResourceNames["ox_inventory"]]:RegisterShop(name, { name = shop.label, inventory = shop.items })
+    elseif Config.Inventory == "qb-inventory" and exports[ResourceNames["qb-inventory"]].CreateShop then
+        exports[ResourceNames["qb-inventory"]]:CreateShop({
             name = name,
             label = shop.label,
             slots = #shop.items,
@@ -29,15 +29,15 @@ local function register_shop(name, shop)
     end
 end
 
-if Config.Inventory == "new-qb-inventory" then
+if Config.Inventory == "qb-inventory" and exports[ResourceNames["qb-inventory"]].OpenInventory then
     RegisterNetEvent("inventory:server:OpenInventory", function(type, name, other)
         if type == "stash" then
             other.label = name
-            exports['qb-inventory']:OpenInventory(source, name, other)
+            exports[ResourceNames["qb-inventory"]]:OpenInventory(source, name, other)
         elseif type == "shop" then
-            exports['qb-inventory']:OpenShop(source, name)
+            exports[ResourceNames["qb-inventory"]]:OpenShop(source, name)
         else
-            exports['qb-inventory']:OpenInventory(source, name, other)
+            exports[ResourceNames["qb-inventory"]]:OpenInventory(source, name, other)
         end
     end)
 end

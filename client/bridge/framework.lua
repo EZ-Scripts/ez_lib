@@ -14,9 +14,9 @@ CreateThread(function()
         Wait(500)
     end
     if Config.Framework == 'qb-core' then
-        Framework = exports['qb-core']:GetCoreObject()
+        Framework = exports[ResourceNames["qb-core"]]:GetCoreObject()
     elseif Config.Framework == 'es_extended' then
-        Framework = exports['es_extended']:getSharedObject()
+        Framework = exports[ResourceNames["es_extended"]]:getSharedObject()
     else
         -- Your custom code here
     end
@@ -40,7 +40,7 @@ end
 
 --- Retrieves player data based on the framework
 --- @return table
---- @usage local player = Ez_lib.Functions.GetPlayerData(source)
+--- @usage local player = Ez_lib.Functions.GetPlayerData()
 local function get_player_data()
     DebugPrint("Getting player data", "this player")
     local player
