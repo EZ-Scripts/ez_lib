@@ -170,28 +170,30 @@ RegisterNetEvent(ResourceName..":UseConsumable", function(item)
 		if data.Progress.animationInCar and IsPedInAnyVehicle(PlayerPedId(), true) == 1 then
 			data.Progress.animation = data.Progress.animationInCar
 		end
-		Ez_lib.Shared.ProgressBar(item, data.Progress.label or "Eating..", (data.Progress.time * 1000) or 5500, data.Progress.useWhileDead or false, data.Cancelled or data.canCancel or false, {
-			disableMovement = data.Progress.disableMovement or false,
-			disableMouse = data.Progress.disableMouse or false,
-			disableCombat = data.Progress.disableCombat or false,
-		}, {}, {}, {}, function(success) -- Done
-			if not success then
-				if data.Cancelled then
-					data.Cancelled()
+		CreateThread(function()
+			Ez_lib.Shared.ProgressBar(item, data.Progress.label or "Eating..", (data.Progress.time * 1000) or 5500, data.Progress.useWhileDead or false, data.Cancelled or data.canCancel or false, {
+				disableMovement = data.Progress.disableMovement or false,
+				disableMouse = data.Progress.disableMouse or false,
+				disableCombat = data.Progress.disableCombat or false,
+			}, {}, {}, {}, function(success) -- Done
+				if not success then
+					if data.Cancelled then
+						data.Cancelled()
+					end
+					return
 				end
-				return
-			end
-			if data.RemoveItem then
-				TriggerServerEvent("ez_lib:server:RemoveItem", item)
-			end
-			if data.Success then
-				data.Success()
-			end
-			if data.Armour then AddArmourToPed(PlayerPedId(), tonumber(data.Armour)) end
-			if data.Stress then Config.RemoveStress(tonumber(data.Stress)) end
-			if data.Thirst then Config.RelieveThirst(tonumber(data.Thirst)) end
-			if data.Hunger then Config.RelieveHunger(tonumber(data.Hunger)) end
-		end, item)
+				if data.RemoveItem then
+					TriggerServerEvent("ez_lib:server:RemoveItem", item)
+				end
+				if data.Success then
+					data.Success()
+				end
+				if data.Armour then AddArmourToPed(PlayerPedId(), tonumber(data.Armour)) end
+				if data.Stress then Config.RemoveStress(tonumber(data.Stress)) end
+				if data.Thirst then Config.RelieveThirst(tonumber(data.Thirst)) end
+				if data.Hunger then Config.RelieveHunger(tonumber(data.Hunger)) end
+			end, item)
+		end)
 		if data.Progress.animation then
 			Ez_lib.Functions.Emote.OnEmotePlay({
 				data.Progress.animation.animDict,
